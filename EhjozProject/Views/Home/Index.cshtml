@@ -1,0 +1,189 @@
+﻿@{
+    ViewData["Title"] = "Home";
+}
+
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-background">
+        <img src="https://images.unsplash.com/photo-1529900748604-07564a03e7a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80" alt="Football Field">
+        <div class="hero-overlay"></div>
+    </div>
+
+    <div class="hero-content">
+        <h1 class="hero-title">Find and Book Your<br>Football Field</h1>
+        <p class="hero-subtitle">Book a football field online easily and securely</p>
+
+        <div class="search-box">
+            <form class="search-form" asp-controller="Stadium" asp-action="Search" method="get">
+                <div class="search-field">
+                    <label for="location">Location</label>
+                    <select id="location" name="city" class="form-select">
+                        <option value="">All Cities</option>
+                        <option value="beirut">Beirut</option>
+                        <option value="tripoli">Tripoli</option>
+                        <option value="sidon">Sidon</option>
+                        <option value="jounieh">Jounieh</option>
+                        <option value="zahle">Zahle</option>
+                    </select>
+                </div>
+
+                <div class="search-field">
+                    <label for="date">Date</label>
+                    <input type="date" id="date" name="date" class="form-control" min="@DateTime.Now.ToString("yyyy-MM-dd")" value="@DateTime.Now.ToString("yyyy-MM-dd")">
+                </div>
+
+                <div class="search-field">
+                    <label for="time">Time</label>
+                    <select id="time" name="time" class="form-select">
+                        <option value="">Any Time</option>
+                        <option value="morning">Morning (6AM - 12PM)</option>
+                        <option value="afternoon">Afternoon (12PM - 6PM)</option>
+                        <option value="evening">Evening (6PM - 12AM)</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-success search-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                    Search
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Stadiums Section -->
+<section class="section">
+    <div class="section-header">
+        <h2 class="section-title">Featured Stadiums</h2>
+        <p class="section-subtitle">Discover the best football fields in your city, handpicked for quality and convenience</p>
+    </div>
+
+    <div class="stadiums-grid">
+        @if (ViewBag.FeaturedStadiums != null && ((IEnumerable<dynamic>)ViewBag.FeaturedStadiums).Any())
+        {
+            foreach (var stadium in ViewBag.FeaturedStadiums)
+            {
+                <div class="stadium-card">
+                    <div class="stadium-image">
+                        <img src="@(stadium.ImageUrl ?? "https://images.unsplash.com/photo-1574629810360-7efbbe195018?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80")" alt="@stadium.Name">
+                        @if (stadium.IsActive)
+                        {
+                            <span class="stadium-badge">Available</span>
+                        }
+                    </div>
+                    <div class="stadium-info">
+                        <h3 class="stadium-name">@stadium.Name</h3>
+                        <div class="stadium-location">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                            <span>@stadium.City, @stadium.Address</span>
+                        </div>
+                        <div class="stadium-meta">
+                            <div class="stadium-price">
+                                <span class="price">$@stadium.PricePerHour</span>
+                                <span class="period">/ hour</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="no-stadiums">
+                <p>No stadiums available at the moment. Check back soon!</p>
+            </div>
+        }
+    </div>
+
+    <div class="section-footer">
+        <a asp-controller="Stadium" asp-action="Index" class="btn btn-outline-success">View All Stadiums</a>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="section how-it-works">
+    <div class="section-header">
+        <h2 class="section-title">How It Works</h2>
+        <p class="section-subtitle">Book your perfect football field in just 3 simple steps</p>
+    </div>
+
+    <div class="steps-grid">
+        <div class="step-card">
+            <div class="step-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.35-4.35"></path>
+                </svg>
+            </div>
+            <h3 class="step-title">Search</h3>
+            <p class="step-description">Find the perfect football field by location, date, and time that suits your schedule.</p>
+        </div>
+
+        <div class="step-card">
+            <div class="step-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                    <path d="m9 16 2 2 4-4"></path>
+                </svg>
+            </div>
+            <h3 class="step-title">Book</h3>
+            <p class="step-description">Select your preferred time slot and complete the booking in just a few clicks.</p>
+        </div>
+
+        <div class="step-card">
+            <div class="step-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M12 2C12 2 14.5 5.5 14.5 12C14.5 18.5 12 22 12 22"></path>
+                    <path d="M12 2C12 2 9.5 5.5 9.5 12C9.5 18.5 12 22 12 22"></path>
+                    <line x1="2" y1="12" x2="22" y2="12"></line>
+                </svg>
+            </div>
+            <h3 class="step-title">Play</h3>
+            <p class="step-description">Show up at the field and enjoy your game! It's that simple.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Statistics Section -->
+<section class="section statistics">
+    <div class="stats-grid">
+        <div class="stat-item">
+            <div class="stat-number">150+</div>
+            <div class="stat-label">Stadiums</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">10K+</div>
+            <div class="stat-label">Bookings</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">5K+</div>
+            <div class="stat-label">Happy Players</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">20+</div>
+            <div class="stat-label">Cities</div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="cta-content">
+        <h2 class="cta-title">Ready to Book Your Field?</h2>
+        <p class="cta-subtitle">Join thousands of players who trust Ehjoz for their football field reservations. Start booking today!</p>
+        <div class="cta-buttons">
+            <a asp-controller="Stadium" asp-action="Index" class="btn btn-light btn-lg">Browse Stadiums</a>
+            <a asp-controller="Owner" asp-action="Register" class="btn btn-outline-light btn-lg">List Your Stadium</a>
+        </div>
+    </div>
+</section>
