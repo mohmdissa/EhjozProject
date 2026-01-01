@@ -1,0 +1,187 @@
+﻿@{
+    ViewData["Title"] = "Payment Successful";
+    var bookingId = ViewBag.BookingId;
+}
+
+<div class="success-page">
+    <div class="success-card">
+        <div class="success-icon">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+        </div>
+
+        <h1>Payment Successful!</h1>
+        <p class="message">Your booking has been confirmed. You will receive a confirmation email shortly.</p>
+
+        <div class="booking-ref">
+            <span>Booking Reference</span>
+            <strong>#@bookingId</strong>
+        </div>
+
+        <div class="success-details">
+            <div class="detail-item">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+                <span>Payment received</span>
+            </div>
+            <div class="detail-item">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+                <span>Booking confirmed</span>
+            </div>
+            <div class="detail-item">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+                <span>Email notification sent</span>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <a asp-controller="Booking" asp-action="Details" asp-route-id="@bookingId" class="btn btn-success">
+                View Booking Details
+            </a>
+            <a asp-controller="Booking" asp-action="MyBookings" class="btn btn-outline-secondary">
+                Go to My Bookings
+            </a>
+        </div>
+
+        <div class="help-note">
+            <p>Need help? <a href="#">Contact Support</a></p>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .success-page {
+            padding: 3rem 0;
+            min-height: calc(100vh - 200px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+        }
+
+        .success-card {
+            background: white;
+            border-radius: 24px;
+            padding: 3rem;
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+        }
+
+        .success-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #1a5d2b 0%, #2e7d42 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            animation: scaleIn 0.5s ease;
+        }
+
+            .success-icon svg {
+                color: white;
+            }
+
+        @@keyframes scaleIn {
+            0% {
+                transform: scale(0);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .success-card h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1a5d2b;
+            margin-bottom: 0.5rem;
+        }
+
+        .success-card .message {
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+
+        .booking-ref {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+        }
+
+            .booking-ref span {
+                display: block;
+                font-size: 0.85rem;
+                color: #666;
+                margin-bottom: 0.25rem;
+            }
+
+            .booking-ref strong {
+                font-size: 1.5rem;
+                color: #1a5d2b;
+            }
+
+        .success-details {
+            text-align: left;
+            margin-bottom: 2rem;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 0;
+            color: #2e7d32;
+        }
+
+            .detail-item svg {
+                color: #2e7d32;
+            }
+
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+            .action-buttons .btn {
+                padding: 0.875rem 1.5rem;
+                font-weight: 600;
+            }
+
+        .help-note {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #eee;
+        }
+
+            .help-note p {
+                margin: 0;
+                color: #666;
+            }
+
+            .help-note a {
+                color: #1a5d2b;
+            }
+    </style>
+}

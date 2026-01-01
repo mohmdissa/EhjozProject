@@ -1,0 +1,475 @@
+﻿@model IEnumerable<EhjozProject.Domain.Models.Stadium.Stadium>
+@{
+    ViewData["Title"] = "Owner Dashboard";
+}
+
+<div class="owner-dashboard">
+    <!-- Welcome Header -->
+    <div class="dashboard-header">
+        <div class="welcome-section">
+            <h1>Welcome back, @ViewBag.OwnerName!</h1>
+            <p>Manage your stadiums and track your bookings</p>
+        </div>
+        <a asp-action="AddStadium" class="btn btn-success btn-add">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Add New Stadium
+        </a>
+    </div>
+
+    <!-- Success Message -->
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Stats Cards -->
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="stat-icon blue">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M12 2C12 2 14.5 5.5 14.5 12C14.5 18.5 12 22 12 22"></path>
+                    <path d="M12 2C12 2 9.5 5.5 9.5 12C9.5 18.5 12 22 12 22"></path>
+                    <line x1="2" y1="12" x2="22" y2="12"></line>
+                </svg>
+            </div>
+            <div class="stat-info">
+                <h3>@ViewBag.TotalStadiums</h3>
+                <p>Total Stadiums</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon green">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+            </div>
+            <div class="stat-info">
+                <h3>@ViewBag.ActiveStadiums</h3>
+                <p>Active Stadiums</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon orange">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+            </div>
+            <div class="stat-info">
+                <h3>0</h3>
+                <p>Total Bookings</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon purple">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="1" x2="12" y2="23"></line>
+                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                </svg>
+            </div>
+            <div class="stat-info">
+                <h3>$0</h3>
+                <p>Total Earnings</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="section-header">
+        <h2>Quick Actions</h2>
+    </div>
+    <div class="quick-actions">
+        <a asp-action="MyStadiums" class="action-card">
+            <div class="action-icon">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="2" y1="12" x2="22" y2="12"></line>
+                </svg>
+            </div>
+            <h4>My Stadiums</h4>
+            <p>View and manage all your stadiums</p>
+        </a>
+
+        <a asp-action="AddStadium" class="action-card">
+            <div class="action-icon">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="16"></line>
+                    <line x1="8" y1="12" x2="16" y2="12"></line>
+                </svg>
+            </div>
+            <h4>Add Stadium</h4>
+            <p>Register a new stadium</p>
+        </a>
+
+        <a asp-action="Bookings" class="action-card">
+            <div class="action-icon">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+            </div>
+            <h4>Bookings</h4>
+            <p>View all bookings</p>
+        </a>
+
+        <a asp-action="Subscription" class="action-card">
+            <div class="action-icon">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+            </div>
+            <h4>Subscription</h4>
+            <p>Manage your plan</p>
+        </a>
+    </div>
+
+    <!-- Recent Stadiums -->
+    <div class="section-header">
+        <h2>Your Stadiums</h2>
+        <a asp-action="MyStadiums" class="view-all">View All →</a>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="stadiums-grid">
+            @foreach (var stadium in Model.Take(3))
+            {
+                <div class="stadium-card">
+                    <div class="stadium-image">
+                        <img src="@(stadium.ImageUrl ?? "https://images.unsplash.com/photo-1574629810360-7efbbe195018?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80")" alt="@stadium.Name">
+                        @if (stadium.IsActive)
+                        {
+                            <span class="status-badge active">Active</span>
+                        }
+                        else
+                        {
+                            <span class="status-badge inactive">Inactive</span>
+                        }
+                    </div>
+                    <div class="stadium-info">
+                        <h3>@stadium.Name</h3>
+                        <p class="location">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                            @stadium.City, @stadium.Address
+                        </p>
+                        <p class="price">$@stadium.PricePerHour / hour</p>
+                        <div class="card-actions">
+                            <a asp-action="EditStadium" asp-route-id="@stadium.Id" class="btn btn-outline-primary btn-sm">Edit</a>
+                            <a asp-action="TimeSlots" asp-route-stadiumId="@stadium.Id" class="btn btn-outline-secondary btn-sm">Time Slots</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="16"></line>
+                <line x1="8" y1="12" x2="16" y2="12"></line>
+            </svg>
+            <h3>No Stadiums Yet</h3>
+            <p>Start by adding your first stadium to begin accepting bookings.</p>
+            <a asp-action="AddStadium" class="btn btn-success">Add Your First Stadium</a>
+        </div>
+    }
+</div>
+
+@section Styles {
+    <style>
+        .owner-dashboard {
+            padding: 1.5rem 0;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .welcome-section h1 {
+            color: #1a5d2b;
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .welcome-section p {
+            color: #666;
+            margin: 0;
+        }
+
+        .btn-add {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .stat-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .stat-icon.blue {
+                background: #e3f2fd;
+                color: #1976d2;
+            }
+
+            .stat-icon.green {
+                background: #e8f5e9;
+                color: #388e3c;
+            }
+
+            .stat-icon.orange {
+                background: #fff3e0;
+                color: #f57c00;
+            }
+
+            .stat-icon.purple {
+                background: #f3e5f5;
+                color: #7b1fa2;
+            }
+
+            .stat-icon svg {
+                stroke: currentColor;
+            }
+
+        .stat-info h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0;
+            color: #333;
+        }
+
+        .stat-info p {
+            margin: 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+            .section-header h2 {
+                font-size: 1.25rem;
+                font-weight: 600;
+                color: #333;
+                margin: 0;
+            }
+
+        .view-all {
+            color: #1a5d2b;
+            font-weight: 500;
+            text-decoration: none;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .action-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            text-decoration: none;
+            color: inherit;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+
+            .action-card:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+            }
+
+        .action-icon {
+            width: 64px;
+            height: 64px;
+            background: #e8f5e9;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+        }
+
+            .action-icon svg {
+                stroke: #1a5d2b;
+            }
+
+        .action-card h4 {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .action-card p {
+            color: #666;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .stadiums-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stadium-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .stadium-image {
+            position: relative;
+            height: 160px;
+        }
+
+            .stadium-image img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+        .status-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+            .status-badge.active {
+                background: #4caf50;
+                color: white;
+            }
+
+            .status-badge.inactive {
+                background: #f44336;
+                color: white;
+            }
+
+        .stadium-info {
+            padding: 1rem;
+        }
+
+            .stadium-info h3 {
+                font-size: 1.1rem;
+                font-weight: 600;
+                margin-bottom: 0.5rem;
+            }
+
+            .stadium-info .location {
+                display: flex;
+                align-items: center;
+                gap: 0.25rem;
+                color: #666;
+                font-size: 0.85rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .stadium-info .price {
+                color: #1a5d2b;
+                font-weight: 600;
+                margin-bottom: 1rem;
+            }
+
+        .card-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+            .empty-state svg {
+                color: #ccc;
+                margin-bottom: 1rem;
+            }
+
+            .empty-state h3 {
+                color: #333;
+                margin-bottom: 0.5rem;
+            }
+
+            .empty-state p {
+                color: #666;
+                margin-bottom: 1.5rem;
+            }
+
+        .alert {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+    </style>
+}

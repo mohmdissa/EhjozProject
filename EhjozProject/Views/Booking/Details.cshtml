@@ -1,0 +1,424 @@
+﻿@model EhjozProject.Domain.Models.Booking.Booking
+@{
+    ViewData["Title"] = "Booking Details";
+}
+
+<div class="booking-details-page">
+    <div class="back-nav">
+        <a asp-controller="Booking" asp-action="MyBookings" class="btn-back">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+            Back to My Bookings
+        </a>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="details-card">
+                <!-- Status Header -->
+                <div class="status-header @Model.Status.ToLower()">
+                    <div class="status-icon">
+                        @if (Model.Status == "Confirmed")
+                        {
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                            </svg>
+                        }
+                        else if (Model.Status == "Pending")
+                        {
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                        }
+                        else if (Model.Status == "Cancelled")
+                        {
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="15" y1="9" x2="9" y2="15"></line>
+                                <line x1="9" y1="9" x2="15" y2="15"></line>
+                            </svg>
+                        }
+                        else
+                        {
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                            </svg>
+                        }
+                    </div>
+                    <div>
+                        <h2>Booking @Model.Status</h2>
+                        <p>Booking ID: #@Model.Id</p>
+                    </div>
+                </div>
+
+                <!-- Stadium Info -->
+                <div class="stadium-section">
+                    <div class="stadium-image">
+                        <img src="@(Model.Stadium?.ImageUrl ?? "https://images.unsplash.com/photo-1574629810360-7efbbe195018?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80")" alt="@Model.Stadium?.Name">
+                    </div>
+                    <div class="stadium-info">
+                        <h3>@Model.Stadium?.Name</h3>
+                        <p>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                            @Model.Stadium?.Address, @Model.Stadium?.City
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Booking Details -->
+                <div class="details-section">
+                    <h4>Booking Information</h4>
+
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <span class="label">Date</span>
+                            <span class="value">@Model.BookingDate.ToString("dddd, MMMM dd, yyyy")</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Time</span>
+                            <span class="value">@Model.TimeSlot?.StartTime.ToString("hh:mm tt") - @Model.TimeSlot?.EndTime.ToString("hh:mm tt")</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Duration</span>
+                            <span class="value">1 Hour</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Status</span>
+                            <span class="value status-badge @Model.Status.ToLower()">@Model.Status</span>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.Notes))
+                    {
+                        <div class="notes-section">
+                            <span class="label">Notes</span>
+                            <p>@Model.Notes</p>
+                        </div>
+                    }
+                </div>
+
+                <!-- Payment Details -->
+                <div class="payment-section">
+                    <h4>Payment Information</h4>
+
+                    <div class="payment-details">
+                        <div class="payment-row">
+                            <span>Stadium rental</span>
+                            <span>$@Model.TotalPrice</span>
+                        </div>
+                        <div class="payment-row">
+                            <span>Service fee</span>
+                            <span>$0.00</span>
+                        </div>
+                        <hr>
+                        <div class="payment-row total">
+                            <span>Total Paid</span>
+                            <span>$@Model.TotalPrice</span>
+                        </div>
+                        <div class="payment-status">
+                            @if (Model.Payment?.IsPaid == true)
+                            {
+                                <span class="paid">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                    </svg>
+                                    Payment Completed
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="unpaid">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <polyline points="12 6 12 12 16 14"></polyline>
+                                    </svg>
+                                    Payment Pending
+                                </span>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="actions-section">
+                    @if (Model.Status == "Pending")
+                    {
+                        <form asp-controller="Booking" asp-action="Cancel" asp-route-id="@Model.Id" method="post" onsubmit="return confirm('Are you sure you want to cancel this booking?');">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-outline-danger">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="15" y1="9" x2="9" y2="15"></line>
+                                    <line x1="9" y1="9" x2="15" y2="15"></line>
+                                </svg>
+                                Cancel Booking
+                            </button>
+                        </form>
+                    }
+                    <a asp-controller="Stadium" asp-action="Details" asp-route-id="@Model.StadiumId" class="btn btn-outline-primary">
+                        View Stadium
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .booking-details-page {
+            padding: 1.5rem 0 3rem;
+        }
+
+        .back-nav {
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #666;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+            .btn-back:hover {
+                color: #1a5d2b;
+            }
+
+        .details-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+
+        /* Status Header */
+        .status-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.5rem;
+            color: white;
+        }
+
+            .status-header.pending {
+                background: linear-gradient(135deg, #f57c00, #ff9800);
+            }
+
+            .status-header.confirmed {
+                background: linear-gradient(135deg, #1a5d2b, #2e7d42);
+            }
+
+            .status-header.completed {
+                background: linear-gradient(135deg, #1565c0, #1976d2);
+            }
+
+            .status-header.cancelled {
+                background: linear-gradient(135deg, #c62828, #e53935);
+            }
+
+        .status-icon {
+            width: 56px;
+            height: 56px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .status-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .status-header p {
+            margin: 0;
+            opacity: 0.9;
+        }
+
+        /* Stadium Section */
+        .stadium-section {
+            display: flex;
+            gap: 1.5rem;
+            padding: 1.5rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .stadium-image img {
+            width: 150px;
+            height: 100px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .stadium-info h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .stadium-info p {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #666;
+            margin: 0;
+        }
+
+        /* Details Section */
+        .details-section, .payment-section {
+            padding: 1.5rem;
+            border-bottom: 1px solid #eee;
+        }
+
+            .details-section h4, .payment-section h4 {
+                font-size: 1rem;
+                font-weight: 600;
+                color: #333;
+                margin-bottom: 1rem;
+            }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+            .detail-item .label {
+                font-size: 0.85rem;
+                color: #666;
+                margin-bottom: 0.25rem;
+            }
+
+            .detail-item .value {
+                font-weight: 600;
+                color: #333;
+            }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+            .status-badge.pending {
+                background: #fff3e0;
+                color: #f57c00;
+            }
+
+            .status-badge.confirmed {
+                background: #e8f5e9;
+                color: #2e7d32;
+            }
+
+            .status-badge.completed {
+                background: #e3f2fd;
+                color: #1976d2;
+            }
+
+            .status-badge.cancelled {
+                background: #ffebee;
+                color: #c62828;
+            }
+
+        .notes-section {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+
+            .notes-section .label {
+                font-size: 0.85rem;
+                color: #666;
+            }
+
+            .notes-section p {
+                margin: 0.5rem 0 0;
+                color: #333;
+            }
+
+        /* Payment Section */
+        .payment-details {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .payment-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            color: #666;
+        }
+
+            .payment-row.total {
+                font-weight: 700;
+                font-size: 1.1rem;
+                color: #1a5d2b;
+            }
+
+        .payment-status {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e0e0e0;
+        }
+
+            .payment-status .paid {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                color: #2e7d32;
+                font-weight: 500;
+            }
+
+            .payment-status .unpaid {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                color: #f57c00;
+                font-weight: 500;
+            }
+
+        /* Actions */
+        .actions-section {
+            padding: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+            .actions-section .btn {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+        @@media (max-width: 576px) {
+            .stadium-section {
+                flex-direction: column;
+            }
+
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+}

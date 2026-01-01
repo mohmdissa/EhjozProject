@@ -1,6 +1,4 @@
-﻿
-using EhjozProject.Domain.Models.Stadium;
-
+﻿using EhjozProject.Domain.Models.Stadium;
 
 namespace EhjozProject.Application.Interfaces
 {

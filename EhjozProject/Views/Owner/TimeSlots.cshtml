@@ -1,0 +1,252 @@
+﻿@model IEnumerable<EhjozProject.Domain.Models.Stadium.TimeSlot>
+@{
+    ViewData["Title"] = "Manage Time Slots";
+    var stadium = ViewBag.Stadium as EhjozProject.Domain.Models.Stadium.Stadium;
+}
+
+<div class="timeslots-page">
+    <div class="page-header">
+        <div>
+            <h1>Manage Time Slots</h1>
+            <p>@stadium?.Name - Set available booking times</p>
+        </div>
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addSlotModal">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Add Time Slot
+        </button>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Date Filter -->
+    <div class="date-filter">
+        <form method="get" class="row g-3 align-items-end">
+            <input type="hidden" name="stadiumId" value="@stadium?.Id" />
+            <div class="col-md-4">
+                <label class="form-label">Filter by Date</label>
+                <input type="date" name="date" class="form-control" value="@ViewBag.SelectedDate?.ToString("yyyy-MM-dd")" onchange="this.form.submit()">
+            </div>
+        </form>
+    </div>
+
+    <!-- Time Slots List -->
+    @if (Model != null && Model.Any())
+    {
+        <div class="slots-grid">
+            @foreach (var slot in Model.OrderBy(s => s.Date).ThenBy(s => s.StartTime))
+            {
+                <div class="slot-card @(slot.IsAvailable ? "available" : "booked")">
+                    <div class="slot-date">
+                        <span class="day">@slot.Date.ToString("dd")</span>
+                        <span class="month">@slot.Date.ToString("MMM")</span>
+                    </div>
+                    <div class="slot-time">
+                        <strong>@slot.StartTime.ToString("hh:mm tt") - @slot.EndTime.ToString("hh:mm tt")</strong>
+                        <span class="status">@(slot.IsAvailable ? "Available" : "Booked")</span>
+                    </div>
+                    <div class="slot-actions">
+                        @if (slot.IsAvailable)
+                        {
+                            <form asp-controller="Owner" asp-action="DeleteTimeSlot" asp-route-id="@slot.Id" method="post" style="display:inline;" onsubmit="return confirm('Delete this time slot?');">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="3 6 5 6 21 6"></polyline>
+                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                    </svg>
+                                </button>
+                            </form>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            <h3>No Time Slots</h3>
+            <p>No time slots available. Add some to start accepting bookings!</p>
+        </div>
+    }
+
+    <!-- Back Link -->
+    <div class="mt-4">
+        <a asp-action="MyStadiums" class="btn btn-outline-secondary">← Back to My Stadiums</a>
+    </div>
+</div>
+
+<!-- Add Time Slot Modal -->
+<div class="modal fade" id="addSlotModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Time Slot</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form asp-controller="Owner" asp-action="AddTimeSlot" method="post">
+                <div class="modal-body">
+                    <input type="hidden" name="StadiumId" value="@stadium?.Id" />
+
+                    <div class="mb-3">
+                        <label class="form-label">Date</label>
+                        <input type="date" name="Date" class="form-control" min="@DateTime.Now.ToString("yyyy-MM-dd")" required />
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label class="form-label">Start Time</label>
+                            <input type="time" name="StartTime" class="form-control" required />
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label class="form-label">End Time</label>
+                            <input type="time" name="EndTime" class="form-control" required />
+                        </div>
+                    </div>
+
+                    <div class="form-check">
+                        <input type="checkbox" name="IsAvailable" value="true" class="form-check-input" id="isAvailable" checked />
+                        <label class="form-check-label" for="isAvailable">Available for booking</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Add Time Slot</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .timeslots-page {
+            padding: 1.5rem 0;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+            .page-header h1 {
+                font-size: 1.75rem;
+                font-weight: 700;
+                color: #1a5d2b;
+                margin-bottom: 0.25rem;
+            }
+
+            .page-header p {
+                color: #666;
+                margin: 0;
+            }
+
+        .date-filter {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .slots-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+
+        .slot-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border-left: 4px solid #4caf50;
+        }
+
+            .slot-card.booked {
+                border-left-color: #ff9800;
+                opacity: 0.8;
+            }
+
+        .slot-date {
+            text-align: center;
+            padding: 0.5rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            min-width: 60px;
+        }
+
+            .slot-date .day {
+                display: block;
+                font-size: 1.5rem;
+                font-weight: 700;
+                color: #1a5d2b;
+            }
+
+            .slot-date .month {
+                font-size: 0.85rem;
+                color: #666;
+                text-transform: uppercase;
+            }
+
+        .slot-time {
+            flex: 1;
+        }
+
+            .slot-time strong {
+                display: block;
+                color: #333;
+            }
+
+            .slot-time .status {
+                font-size: 0.85rem;
+                color: #4caf50;
+            }
+
+        .slot-card.booked .slot-time .status {
+            color: #ff9800;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+            .empty-state svg {
+                color: #ccc;
+                margin-bottom: 1rem;
+            }
+
+            .empty-state h3 {
+                color: #333;
+                margin-bottom: 0.5rem;
+            }
+
+            .empty-state p {
+                color: #666;
+            }
+    </style>
+}

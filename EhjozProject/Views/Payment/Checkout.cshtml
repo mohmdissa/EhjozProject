@@ -1,0 +1,303 @@
+﻿@model EhjozProject.Domain.Models.Booking.Booking
+@{
+    ViewData["Title"] = "Checkout";
+}
+
+<div class="checkout-page">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="checkout-card">
+                <div class="checkout-header">
+                    <h1>Complete Payment</h1>
+                    <p>Secure payment for your booking</p>
+                </div>
+
+                <!-- Order Summary -->
+                <div class="order-summary">
+                    <h3>Order Summary</h3>
+                    <div class="summary-item">
+                        <img src="@(Model.Stadium?.ImageUrl ?? "https://images.unsplash.com/photo-1574629810360-7efbbe195018?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80")" alt="@Model.Stadium?.Name">
+                        <div class="item-details">
+                            <strong>@Model.Stadium?.Name</strong>
+                            <span>@Model.BookingDate.ToString("MMM dd, yyyy")</span>
+                            <span>@Model.TimeSlot?.StartTime.ToString("hh:mm tt") - @Model.TimeSlot?.EndTime.ToString("hh:mm tt")</span>
+                        </div>
+                        <div class="item-price">$@Model.TotalPrice</div>
+                    </div>
+                    <hr>
+                    <div class="total-row">
+                        <span>Total</span>
+                        <span class="total-amount">$@Model.TotalPrice</span>
+                    </div>
+                </div>
+
+                <!-- Payment Form (Simplified for Testing) -->
+                <form asp-controller="Payment" asp-action="Process" method="post">
+                    <input type="hidden" name="bookingId" value="@Model.Id" />
+
+                    <div class="payment-method">
+                        <h3>Payment Method</h3>
+
+                        <div class="method-options">
+                            <div class="method-option">
+                                <input type="radio" name="paymentMethod" value="card" id="card" checked>
+                                <label for="card">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                                        <line x1="1" y1="10" x2="23" y2="10"></line>
+                                    </svg>
+                                    Credit/Debit Card
+                                </label>
+                            </div>
+                            <div class="method-option">
+                                <input type="radio" name="paymentMethod" value="cash" id="cash">
+                                <label for="cash">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="12" y1="1" x2="12" y2="23"></line>
+                                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                                    </svg>
+                                    Pay at Stadium
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card Details (For Testing - Simplified) -->
+                    <div class="card-details" id="cardDetails">
+                        <div class="mb-3">
+                            <label class="form-label">Card Number</label>
+                            <input type="text" class="form-control" placeholder="4242 4242 4242 4242" maxlength="19">
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <label class="form-label">Expiry Date</label>
+                                <input type="text" class="form-control" placeholder="MM/YY" maxlength="5">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label">CVV</label>
+                                <input type="text" class="form-control" placeholder="123" maxlength="3">
+                            </div>
+                        </div>
+                        <p class="test-note">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="16" x2="12" y2="12"></line>
+                                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                            </svg>
+                            Test mode: Use any card details
+                        </p>
+                    </div>
+
+                    <div class="secure-note">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        Your payment information is secure and encrypted
+                    </div>
+
+                    <button type="submit" class="btn btn-success btn-pay">
+                        Pay $@Model.TotalPrice
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .checkout-page {
+            padding: 2rem 0 3rem;
+            background: #f8f9fa;
+            min-height: calc(100vh - 200px);
+        }
+
+        .checkout-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+
+        .checkout-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+            .checkout-header h1 {
+                font-size: 1.5rem;
+                font-weight: 700;
+                color: #333;
+                margin-bottom: 0.25rem;
+            }
+
+            .checkout-header p {
+                color: #666;
+                margin: 0;
+            }
+
+        /* Order Summary */
+        .order-summary {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+        }
+
+            .order-summary h3 {
+                font-size: 1rem;
+                font-weight: 600;
+                color: #333;
+                margin-bottom: 1rem;
+            }
+
+        .summary-item {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+            .summary-item img {
+                width: 60px;
+                height: 60px;
+                border-radius: 8px;
+                object-fit: cover;
+            }
+
+        .item-details {
+            flex: 1;
+        }
+
+            .item-details strong {
+                display: block;
+                color: #333;
+            }
+
+            .item-details span {
+                display: block;
+                font-size: 0.85rem;
+                color: #666;
+            }
+
+        .item-price {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+        }
+
+        .total-amount {
+            font-size: 1.25rem;
+            color: #1a5d2b;
+        }
+
+        /* Payment Method */
+        .payment-method {
+            margin-bottom: 1.5rem;
+        }
+
+            .payment-method h3 {
+                font-size: 1rem;
+                font-weight: 600;
+                color: #333;
+                margin-bottom: 1rem;
+            }
+
+        .method-options {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .method-option {
+            flex: 1;
+        }
+
+            .method-option input {
+                display: none;
+            }
+
+            .method-option label {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 1rem;
+                border: 2px solid #e0e0e0;
+                border-radius: 12px;
+                cursor: pointer;
+                transition: all 0.3s;
+                text-align: center;
+            }
+
+            .method-option input:checked + label {
+                border-color: #1a5d2b;
+                background: #e8f5e9;
+            }
+
+            .method-option label svg {
+                color: #1a5d2b;
+            }
+
+        /* Card Details */
+        .card-details {
+            margin-bottom: 1.5rem;
+        }
+
+        .test-note {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background: #fff3e0;
+            border-radius: 8px;
+        }
+
+            .test-note svg {
+                color: #f57c00;
+            }
+
+        .secure-note {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+
+            .secure-note svg {
+                color: #1a5d2b;
+            }
+
+        .btn-pay {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('input[name="paymentMethod"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const cardDetails = document.getElementById('cardDetails');
+                if (this.value === 'card') {
+                    cardDetails.style.display = 'block';
+                } else {
+                    cardDetails.style.display = 'none';
+                }
+            });
+        });
+    </script>
+}

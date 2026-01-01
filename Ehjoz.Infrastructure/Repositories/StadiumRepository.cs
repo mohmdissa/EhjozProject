@@ -42,7 +42,7 @@ namespace EhjozProject.Infrastructure.Repositories
 
         public async Task<Stadium> AddAsync(Stadium stadium)
         {
-            await _context.Stadiums.AddAsync(stadium);
+            _context.Stadiums.Add(stadium);
             await _context.SaveChangesAsync();
             return stadium;
         }

@@ -8,13 +8,19 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/EhjozProject.styles.css" asp-append-version="true" />
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet">
-
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">EhjozProject</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <span style="color: #1a5d2b; font-weight: 700;"> Ehjoz</span>
+                </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -25,13 +31,48 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link text-dark" asp-controller="Stadium" asp-action="Index">Stadiums</a>
                         </li>
+                        @if (User.Identity != null && User.Identity.IsAuthenticated)
+                        {
+                            <!-- Show Owner Dashboard link if user is Owner -->
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Owner" asp-action="Dashboard">Owner Dashboard</a>
+                            </li>
+                        }
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        </li>
                     </ul>
-                    <partial name="_LoginPartial" />
+                    <ul class="navbar-nav">
+                        @if (User.Identity != null && User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">
+                                    Hello, @User.Identity.Name!
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                                    <button type="submit" class="nav-link btn btn-link text-dark border-0">Logout</button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link btn btn-success btn-sm text-white ms-2" asp-controller="Owner" asp-action="Register">
+                                    Become an Owner
+                                </a>
+                            </li>
+                        }
+                    </ul>
                 </div>
             </div>
         </nav>
@@ -41,7 +82,6 @@
             @RenderBody()
         </main>
     </div>
-
     <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2025 - EhjozProject - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
@@ -51,7 +91,6 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
-
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

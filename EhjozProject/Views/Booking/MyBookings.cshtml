@@ -1,0 +1,318 @@
+﻿@model IEnumerable<EhjozProject.Domain.Models.Booking.Booking>
+@{
+    ViewData["Title"] = "My Bookings";
+}
+
+<div class="my-bookings-page">
+    <div class="page-header">
+        <h1>My Bookings</h1>
+        <p>View and manage your stadium bookings</p>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Filter Tabs -->
+    <div class="filter-tabs">
+        <button class="tab-btn active" data-filter="all">All</button>
+        <button class="tab-btn" data-filter="Pending">Pending</button>
+        <button class="tab-btn" data-filter="Confirmed">Confirmed</button>
+        <button class="tab-btn" data-filter="Completed">Completed</button>
+        <button class="tab-btn" data-filter="Cancelled">Cancelled</button>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="bookings-list">
+            @foreach (var booking in Model.OrderByDescending(b => b.BookingDate))
+            {
+                <div class="booking-card" data-status="@booking.Status">
+                    <div class="booking-status @booking.Status.ToLower()">@booking.Status</div>
+
+                    <div class="booking-content">
+                        <div class="booking-image">
+                            <img src="@(booking.Stadium?.ImageUrl ?? "https://images.unsplash.com/photo-1574629810360-7efbbe195018?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80")" alt="@booking.Stadium?.Name">
+                        </div>
+
+                        <div class="booking-info">
+                            <h3>@booking.Stadium?.Name</h3>
+                            <div class="info-row">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                    <circle cx="12" cy="10" r="3"></circle>
+                                </svg>
+                                <span>@booking.Stadium?.City, @booking.Stadium?.Address</span>
+                            </div>
+                            <div class="info-row">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                </svg>
+                                <span>@booking.BookingDate.ToString("dddd, MMMM dd, yyyy")</span>
+                            </div>
+                            <div class="info-row">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12 6 12 12 16 14"></polyline>
+                                </svg>
+                                <span>@booking.TimeSlot?.StartTime.ToString("hh:mm tt") - @booking.TimeSlot?.EndTime.ToString("hh:mm tt")</span>
+                            </div>
+                        </div>
+
+                        <div class="booking-price">
+                            <span class="price">$@booking.TotalPrice</span>
+                            <span class="label">Total</span>
+                        </div>
+                    </div>
+
+                    <div class="booking-actions">
+                        <a asp-controller="Booking" asp-action="Details" asp-route-id="@booking.Id" class="btn btn-outline-primary btn-sm">
+                            View Details
+                        </a>
+                        @if (booking.Status == "Pending")
+                        {
+                            <form asp-controller="Booking" asp-action="Cancel" asp-route-id="@booking.Id" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to cancel this booking?');">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-outline-danger btn-sm">Cancel</button>
+                            </form>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+            <h3>No Bookings Yet</h3>
+            <p>You haven't made any bookings yet. Browse stadiums and make your first booking!</p>
+            <a asp-controller="Stadium" asp-action="Index" class="btn btn-success">Browse Stadiums</a>
+        </div>
+    }
+</div>
+
+@section Styles {
+    <style>
+        .my-bookings-page {
+            padding: 1.5rem 0 3rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+            .page-header h1 {
+                font-size: 1.75rem;
+                font-weight: 700;
+                color: #1a5d2b;
+                margin-bottom: 0.25rem;
+            }
+
+            .page-header p {
+                color: #666;
+                margin: 0;
+            }
+
+        /* Filter Tabs */
+        .filter-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 0.5rem 1.25rem;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+            .tab-btn:hover {
+                border-color: #1a5d2b;
+            }
+
+            .tab-btn.active {
+                background: #1a5d2b;
+                border-color: #1a5d2b;
+                color: white;
+            }
+
+        /* Booking Card */
+        .booking-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            position: relative;
+        }
+
+        .booking-status {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+            .booking-status.pending {
+                background: #fff3e0;
+                color: #f57c00;
+            }
+
+            .booking-status.confirmed {
+                background: #e8f5e9;
+                color: #2e7d32;
+            }
+
+            .booking-status.completed {
+                background: #e3f2fd;
+                color: #1976d2;
+            }
+
+            .booking-status.cancelled {
+                background: #ffebee;
+                color: #c62828;
+            }
+
+        .booking-content {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .booking-image img {
+            width: 120px;
+            height: 80px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .booking-info {
+            flex: 1;
+            min-width: 200px;
+        }
+
+            .booking-info h3 {
+                font-size: 1.1rem;
+                font-weight: 600;
+                color: #333;
+                margin-bottom: 0.5rem;
+            }
+
+        .info-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+
+            .info-row svg {
+                color: #1a5d2b;
+            }
+
+        .booking-price {
+            text-align: right;
+            padding-right: 4rem;
+        }
+
+            .booking-price .price {
+                display: block;
+                font-size: 1.5rem;
+                font-weight: 700;
+                color: #1a5d2b;
+            }
+
+            .booking-price .label {
+                color: #666;
+                font-size: 0.85rem;
+            }
+
+        .booking-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+            .empty-state svg {
+                color: #ccc;
+                margin-bottom: 1rem;
+            }
+
+            .empty-state h3 {
+                color: #333;
+                margin-bottom: 0.5rem;
+            }
+
+            .empty-state p {
+                color: #666;
+                margin-bottom: 1.5rem;
+            }
+
+        @@media (max-width: 768px) {
+            .booking-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .booking-price {
+                text-align: left;
+                padding-right: 0;
+            }
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+
+                const filter = this.getAttribute('data-filter');
+                document.querySelectorAll('.booking-card').forEach(card => {
+                    if (filter === 'all' || card.getAttribute('data-status') === filter) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+}

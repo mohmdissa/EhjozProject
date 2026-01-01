@@ -1,0 +1,302 @@
+﻿@{
+    ViewData["Title"] = "My Subscription";
+    var subscription = ViewBag.Subscription as EhjozProject.Domain.Models.Subscription.Subscription;
+    var plans = ViewBag.Plans as IEnumerable<EhjozProject.Domain.Models.Subscription.SubscriptionPlan>;
+}
+
+<div class="subscription-page">
+    <div class="page-header">
+        <h1>My Subscription</h1>
+        <p>Manage your subscription plan</p>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Current Subscription -->
+    <div class="current-subscription">
+        <h3>Current Plan</h3>
+        @if (subscription != null && subscription.IsActive)
+        {
+            <div class="subscription-card active">
+                <div class="plan-badge">Active</div>
+                <h4>@subscription.Plan?.Name</h4>
+                <p class="plan-description">@subscription.Plan?.Description</p>
+                <div class="plan-details">
+                    <div class="detail-item">
+                        <span class="label">Started</span>
+                        <span class="value">@subscription.StartDate.ToString("MMM dd, yyyy")</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Expires</span>
+                        <span class="value">@subscription.EndDate.ToString("MMM dd, yyyy")</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Days Remaining</span>
+                        <span class="value highlight">@((subscription.EndDate - DateTime.Now).Days) days</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Max Stadiums</span>
+                        <span class="value">@subscription.Plan?.MaxStadiums</span>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="subscription-card inactive">
+                <div class="plan-badge expired">No Active Plan</div>
+                <h4>You don't have an active subscription</h4>
+                <p>Subscribe to a plan to start listing your stadiums and accepting bookings.</p>
+            </div>
+        }
+    </div>
+
+    <!-- Available Plans -->
+    <div class="available-plans">
+        <h3>Available Plans</h3>
+        <div class="plans-grid">
+            @if (plans != null)
+            {
+                @foreach (var plan in plans.Where(p => p.IsActive))
+                {
+                    <div class="plan-card @(subscription?.PlanId == plan.Id ? "current" : "")">
+                        @if (subscription?.PlanId == plan.Id)
+                        {
+                            <div class="current-badge">Current Plan</div>
+                        }
+                        <h4>@plan.Name</h4>
+                        <div class="plan-price">
+                            <span class="amount">$@plan.Price</span>
+                            <span class="period">/ @plan.DurationDays days</span>
+                        </div>
+                        <p class="plan-description">@plan.Description</p>
+                        <ul class="plan-features">
+                            <li>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                                Up to @plan.MaxStadiums stadiums
+                            </li>
+                            <li>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                                @plan.DurationDays days validity
+                            </li>
+                            <li>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                                24/7 Support
+                            </li>
+                        </ul>
+                        @if (subscription?.PlanId != plan.Id)
+                        {
+                            <form asp-controller="Subscription" asp-action="Subscribe" method="post">
+                                <input type="hidden" name="planId" value="@plan.Id" />
+                                <button type="submit" class="btn btn-success w-100">
+                                    Subscribe Now
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <button class="btn btn-outline-success w-100" disabled>
+                                Current Plan
+                            </button>
+                        }
+                    </div>
+                }
+            }
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a asp-action="Dashboard" class="btn btn-outline-secondary">← Back to Dashboard</a>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .subscription-page {
+            padding: 1.5rem 0;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+            .page-header h1 {
+                font-size: 1.75rem;
+                font-weight: 700;
+                color: #1a5d2b;
+                margin-bottom: 0.25rem;
+            }
+
+            .page-header p {
+                color: #666;
+                margin: 0;
+            }
+
+        .current-subscription {
+            margin-bottom: 2rem;
+        }
+
+            .current-subscription h3, .available-plans h3 {
+                font-size: 1.1rem;
+                font-weight: 600;
+                color: #333;
+                margin-bottom: 1rem;
+            }
+
+        .subscription-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            position: relative;
+        }
+
+            .subscription-card.active {
+                border: 2px solid #4caf50;
+            }
+
+            .subscription-card.inactive {
+                border: 2px solid #e0e0e0;
+            }
+
+        .plan-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: #4caf50;
+            color: white;
+        }
+
+            .plan-badge.expired {
+                background: #f44336;
+            }
+
+        .subscription-card h4 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1a5d2b;
+            margin-bottom: 0.5rem;
+        }
+
+        .plan-description {
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+
+        .plan-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .detail-item {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+            .detail-item .label {
+                display: block;
+                font-size: 0.85rem;
+                color: #666;
+                margin-bottom: 0.25rem;
+            }
+
+            .detail-item .value {
+                font-weight: 600;
+                color: #333;
+            }
+
+                .detail-item .value.highlight {
+                    color: #1a5d2b;
+                }
+
+        .plans-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .plan-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            position: relative;
+            text-align: center;
+        }
+
+            .plan-card.current {
+                border: 2px solid #1a5d2b;
+            }
+
+        .current-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a5d2b;
+            color: white;
+            padding: 0.25rem 1rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .plan-card h4 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .plan-price {
+            margin-bottom: 1rem;
+        }
+
+            .plan-price .amount {
+                font-size: 2rem;
+                font-weight: 700;
+                color: #1a5d2b;
+            }
+
+            .plan-price .period {
+                color: #666;
+            }
+
+        .plan-features {
+            list-style: none;
+            padding: 0;
+            text-align: left;
+            margin-bottom: 1.5rem;
+        }
+
+            .plan-features li {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 0.5rem 0;
+                color: #666;
+            }
+
+                .plan-features li svg {
+                    color: #4caf50;
+                }
+    </style>
+}

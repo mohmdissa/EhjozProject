@@ -1,8 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using EhjozProject.Application.Interfaces;
+﻿using EhjozProject.Application.Interfaces;
 using EhjozProject.Application.Services;
 using EhjozProject.Domain.Interfaces.Repositories;
 using EhjozProject.Infrastructure.Repositories;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace EhjozProject.Infrastructure
 {

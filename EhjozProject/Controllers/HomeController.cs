@@ -1,32 +1,27 @@
-using System.Diagnostics;
-using EhjozProject.Models;
+using EhjozProject.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
-namespace EhjozProject.Controllers
+namespace EhjozProject.Web.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly IStadiumService _stadiumService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IStadiumService stadiumService)
         {
-            _logger = logger;
+            _stadiumService = stadiumService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            var featuredStadiums = await _stadiumService.GetFeaturedStadiumsAsync(6);
+            ViewBag.FeaturedStadiums = featuredStadiums;
             return View();
         }
 
         public IActionResult Privacy()
         {
             return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

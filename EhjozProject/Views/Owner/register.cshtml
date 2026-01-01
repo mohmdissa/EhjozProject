@@ -1,0 +1,217 @@
+﻿@model EhjozProject.Web.ViewModels.Owner.OwnerRegisterViewModel
+@{
+    ViewData["Title"] = "Owner Registration";
+}
+
+<div class="owner-register-page">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="register-card">
+                <div class="register-header">
+                    <div class="register-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="8.5" cy="7" r="4"></circle>
+                            <line x1="20" y1="8" x2="20" y2="14"></line>
+                            <line x1="23" y1="11" x2="17" y2="11"></line>
+                        </svg>
+                    </div>
+                    <h2>Become a Stadium Owner</h2>
+                    <p>Register your stadiums and start earning today</p>
+                </div>
+
+                <form asp-action="Register" method="post">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                    <div class="form-section">
+                        <h5>Account Information</h5>
+
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label"></label>
+                            <input asp-for="Email" class="form-control" placeholder="owner@example.com" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Password" class="form-label"></label>
+                                <input asp-for="Password" class="form-control" placeholder="••••••••" />
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="ConfirmPassword" class="form-label"></label>
+                                <input asp-for="ConfirmPassword" class="form-control" placeholder="••••••••" />
+                                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h5>Personal Information</h5>
+
+                        <div class="mb-3">
+                            <label asp-for="FullName" class="form-label"></label>
+                            <input asp-for="FullName" class="form-control" placeholder="John Doe" />
+                            <span asp-validation-for="FullName" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="PhoneNumber" class="form-label"></label>
+                            <input asp-for="PhoneNumber" class="form-control" placeholder="+961 XX XXX XXX" />
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="City" class="form-label"></label>
+                                <select asp-for="City" class="form-select">
+                                    <option value="">Select City</option>
+                                    <option value="Beirut">Beirut</option>
+                                    <option value="Tripoli">Tripoli</option>
+                                    <option value="Sidon">Sidon</option>
+                                    <option value="Jounieh">Jounieh</option>
+                                    <option value="Zahle">Zahle</option>
+                                </select>
+                                <span asp-validation-for="City" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Address" class="form-label"></label>
+                                <input asp-for="Address" class="form-control" placeholder="Street address" />
+                                <span asp-validation-for="Address" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-check mb-4">
+                        <input class="form-check-input" type="checkbox" id="agreeTerms" required>
+                        <label class="form-check-label" for="agreeTerms">
+                            I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn btn-success btn-lg w-100">
+                        Create Owner Account
+                    </button>
+                </form>
+
+                <div class="register-footer">
+                    <p>Already have an account? <a asp-area="Identity" asp-page="/Account/Login">Login here</a></p>
+                    <p>Want to book stadiums instead? <a asp-area="Identity" asp-page="/Account/Register">Register as Customer</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .owner-register-page {
+            padding: 2rem 0;
+            min-height: calc(100vh - 200px);
+            background: linear-gradient(135deg, #f8faf8 0%, #e8f5e9 100%);
+        }
+
+        .register-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .register-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .register-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #1a5d2b 0%, #2e7d42 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+        }
+
+            .register-icon svg {
+                stroke: white;
+            }
+
+        .register-header h2 {
+            color: #1a5d2b;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .register-header p {
+            color: #666;
+        }
+
+        .form-section {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+        }
+
+            .form-section h5 {
+                color: #1a5d2b;
+                font-weight: 600;
+                margin-bottom: 1rem;
+                padding-bottom: 0.5rem;
+                border-bottom: 2px solid #e8f5e9;
+            }
+
+        .form-label {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .form-control, .form-select {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+            .form-control:focus, .form-select:focus {
+                border-color: #1a5d2b;
+                box-shadow: 0 0 0 3px rgba(26, 93, 43, 0.1);
+            }
+
+        .btn-success {
+            background: linear-gradient(135deg, #1a5d2b 0%, #2e7d42 100%);
+            border: none;
+            padding: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+        }
+
+            .btn-success:hover {
+                background: linear-gradient(135deg, #134620 0%, #1a5d2b 100%);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 15px rgba(26, 93, 43, 0.3);
+            }
+
+        .register-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #eee;
+        }
+
+            .register-footer p {
+                margin-bottom: 0.5rem;
+                color: #666;
+            }
+
+            .register-footer a {
+                color: #1a5d2b;
+                font-weight: 500;
+            }
+    </style>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

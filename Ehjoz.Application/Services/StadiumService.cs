@@ -2,7 +2,6 @@
 using EhjozProject.Domain.Interfaces.Repositories;
 using EhjozProject.Domain.Models.Stadium;
 
-
 namespace EhjozProject.Application.Services
 {
     public class StadiumService : IStadiumService
@@ -16,24 +15,34 @@ namespace EhjozProject.Application.Services
 
         public async Task<IEnumerable<Stadium>> GetAllStadiumsAsync()
         {
-            return await _stadiumRepository.GetAllAsync();
+            var stadiums = await _stadiumRepository.GetAllAsync();
+            return stadiums ?? new List<Stadium>();
         }
 
         public async Task<IEnumerable<Stadium>> GetFeaturedStadiumsAsync(int count = 6)
         {
             var stadiums = await _stadiumRepository.GetAllAsync();
-            return stadiums.Where(s => s.IsActive).Take(count);
+
+            if (stadiums == null)
+                return new List<Stadium>();
+
+            return stadiums.Where(s => s.IsActive).Take(count).ToList();
         }
 
         public async Task<IEnumerable<Stadium>> GetStadiumsByOwnerIdAsync(string ownerId)
         {
-            return await _stadiumRepository.GetByOwnerIdAsync(ownerId);
+            var stadiums = await _stadiumRepository.GetByOwnerIdAsync(ownerId);
+            return stadiums ?? new List<Stadium>();
         }
 
         public async Task<IEnumerable<Stadium>> GetStadiumsByCityAsync(string city)
         {
             var stadiums = await _stadiumRepository.GetAllAsync();
-            return stadiums.Where(s => s.City.ToLower() == city.ToLower());
+
+            if (stadiums == null)
+                return new List<Stadium>();
+
+            return stadiums.Where(s => s.City.ToLower() == city.ToLower()).ToList();
         }
 
         public async Task<Stadium?> GetStadiumByIdAsync(int id)
