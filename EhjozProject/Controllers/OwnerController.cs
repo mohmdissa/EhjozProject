@@ -299,6 +299,66 @@ namespace EhjozProject.Web.Controllers
             TempData["Success"] = stadium.IsActive ? "Stadium deactivated!" : "Stadium activated!";
             return RedirectToAction(nameof(MyStadiums));
         }
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> Subscription()
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null || user.Role != "Owner")
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            // For now, just return the view (subscription service not implemented yet)
+            ViewBag.Subscription = null;
+            ViewBag.Plans = null;
+
+            return View();
+        }
+
+        // GET: Owner/TimeSlots
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> TimeSlots(int stadiumId)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null || user.Role != "Owner")
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            var stadium = await _stadiumService.GetStadiumByIdAsync(stadiumId);
+
+            if (stadium == null || stadium.OwnerId != user.Id)
+            {
+                return NotFound();
+            }
+
+            ViewBag.Stadium = stadium;
+
+            return View(stadium.TimeSlots);
+        }
+
+        // GET: Owner/Bookings
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> Bookings()
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null || user.Role != "Owner")
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            var stadiums = await _stadiumService.GetStadiumsByOwnerIdAsync(user.Id);
+            ViewBag.Stadiums = stadiums;
+
+            // For now, return empty list (booking service not implemented yet)
+            return View(new List<EhjozProject.Domain.Models.Booking.Booking>());
+        }
 
         #endregion
     }

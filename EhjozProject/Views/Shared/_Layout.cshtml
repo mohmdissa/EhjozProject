@@ -39,6 +39,10 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-controller="Owner" asp-action="Dashboard">Owner Dashboard</a>
                             </li>
+                        }else{
+                        <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Stadium" asp-action="Index">Fill Something</a>
+                        </li>
                         }
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
@@ -71,6 +75,7 @@
                                     Become an Owner
                                 </a>
                             </li>
+                            <div id="google_translate_element"></div>
                         }
                     </ul>
                 </div>
@@ -91,6 +96,19 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+    <div id="google_translate_element"></div>
+
+   <!-- <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'en,ar',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+            }, 'google_translate_element');
+        }
+    </script>
+    -->
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
