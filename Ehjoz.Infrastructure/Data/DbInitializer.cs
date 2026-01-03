@@ -1,6 +1,7 @@
 using EhjozProject.Domain.Models.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace EhjozProject.Infrastructure.Data
 {
