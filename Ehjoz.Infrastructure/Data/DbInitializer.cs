@@ -47,6 +47,16 @@ namespace EhjozProject.Infrastructure.Data
                     adminUser.IsApproved = true;
                     await userManager.UpdateAsync(adminUser);
                 }
+                
+                // Reset password to ensure it's correct
+                var token = await userManager.GeneratePasswordResetTokenAsync(adminUser);
+                var resetResult = await userManager.ResetPasswordAsync(adminUser, token, "Admin123!");
+                if (!resetResult.Succeeded)
+                {
+                    // If reset fails, remove password and set it again
+                    await userManager.RemovePasswordAsync(adminUser);
+                    await userManager.AddPasswordAsync(adminUser, "Admin123!");
+                }
             }
         }
     }
