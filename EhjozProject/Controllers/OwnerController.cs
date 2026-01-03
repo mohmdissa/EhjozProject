@@ -301,60 +301,60 @@
             }
 
             #endregion
-        }
-<<<<<<< HEAD
+        
+
 
         // POST: Owner/DeleteStadium/5
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteStadium(int id)
-        {
-            var user = await _userManager.GetUserAsync(User);
+        //public async Task<IActionResult> DeleteStadium(int id)
+        //{
+        //    var user = await _userManager.GetUserAsync(User);
 
-            if (user == null || user.Role != "Owner")
-            {
-                return RedirectToAction("Index", "Home");
-            }
+        //    if (user == null || user.Role != "Owner")
+        //    {
+        //        return RedirectToAction("Index", "Home");
+        //    }
 
-            var stadium = await _stadiumService.GetStadiumByIdAsync(id);
+        //    var stadium = await _stadiumService.GetStadiumByIdAsync(id);
 
-            if (stadium == null || stadium.OwnerId != user.Id)
-            {
-                return NotFound();
-            }
+        //    if (stadium == null || stadium.OwnerId != user.Id)
+        //    {
+        //        return NotFound();
+        //    }
 
-            await _stadiumService.DeleteStadiumAsync(id);
+        //    await _stadiumService.DeleteStadiumAsync(id);
 
-            TempData["Success"] = "Stadium deleted successfully!";
-            return RedirectToAction(nameof(MyStadiums));
-        }
+        //    TempData["Success"] = "Stadium deleted successfully!";
+        //    return RedirectToAction(nameof(MyStadiums));
+        //}
 
         // POST: Owner/ToggleStatus/5
         [Authorize]
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ToggleStatus(int id)
-        {
-            var user = await _userManager.GetUserAsync(User);
+        
+        //public async Task<IActionResult> ToggleStatus(int id)
+        //{
+        //    var user = await _userManager.GetUserAsync(User);
 
-            if (user == null || user.Role != "Owner")
-            {
-                return RedirectToAction("Index", "Home");
-            }
+        //    if (user == null || user.Role != "Owner")
+        //    {
+        //        return RedirectToAction("Index", "Home");
+        //    }
 
-            var stadium = await _stadiumService.GetStadiumByIdAsync(id);
+        //    var stadium = await _stadiumService.GetStadiumByIdAsync(id);
 
-            if (stadium == null || stadium.OwnerId != user.Id)
-            {
-                return NotFound();
-            }
+        //    if (stadium == null || stadium.OwnerId != user.Id)
+        //    {
+        //        return NotFound();
+        //    }
 
-            await _stadiumService.ToggleStadiumStatusAsync(id);
+        //    await _stadiumService.ToggleStadiumStatusAsync(id);
 
-            TempData["Success"] = stadium.IsActive ? "Stadium deactivated!" : "Stadium activated!";
-            return RedirectToAction(nameof(MyStadiums));
-        }
+        //    TempData["Success"] = stadium.IsActive ? "Stadium deactivated!" : "Stadium activated!";
+        //    return RedirectToAction(nameof(MyStadiums));
+        //}
         [Authorize]
         [HttpGet]
         public async Task<IActionResult> Subscription()
@@ -416,9 +416,8 @@
             return View(new List<EhjozProject.Domain.Models.Booking.Booking>());
         }
 
-        #endregion
+        
     }
 }
-=======
-    }
->>>>>>> 52bf94392d05dd76c306d94a66b92c8547c28c2d
+    
+
