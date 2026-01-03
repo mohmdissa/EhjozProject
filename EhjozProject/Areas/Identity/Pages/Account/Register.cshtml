@@ -1,0 +1,176 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="auth-page">
+    <div class="auth-card">
+
+        <div class="auth-header">
+            <div class="auth-icon">
+                <img src="~/images/footballogo.png" class="logo-img" />
+            </div>
+            <h2>Create Account</h2>
+            <p>Join and start booking</p>
+        </div>
+
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+            <!-- EMAIL -->
+            <div class="mb-3">
+                <label asp-for="Input.Email"></label>
+                <input asp-for="Input.Email" class="form-control" />
+            </div>
+
+            <!-- PASSWORD -->
+            <div class="mb-3">
+                <label asp-for="Input.Password"></label>
+                <div class="password-wrapper">
+                    <input asp-for="Input.Password"
+                           id="pwd"
+                           type="password"
+                           class="form-control password-input" />
+                    <button type="button"
+                            class="eye-btn"
+                            onclick="togglePwd('pwd', this.querySelector('img'))">
+                        <img src="/images/hide.png">
+                    </button>
+                </div>
+            </div>
+
+            <!-- CONFIRM PASSWORD -->
+            <div class="mb-3">
+                <label asp-for="Input.ConfirmPassword"></label>
+                <div class="password-wrapper">
+                    <input asp-for="Input.ConfirmPassword"
+                           id="cpwd"
+                           type="password"
+                           class="form-control password-input" />
+                    <button type="button"
+                            class="eye-btn"
+                            onclick="togglePwd('cpwd', this.querySelector('img'))">
+                        <img src="/images/hide.png">
+                    </button>
+                </div>
+            </div>
+
+            <button class="btn btn-main w-100 mb-3">
+                Register
+            </button>
+
+            <a asp-controller="Home"
+               asp-action="Index"
+               class="btn btn-outline w-100">
+                Cancel
+            </a>
+
+            <!-- 🔗 LOGIN LINK -->
+            <div class="auth-switch">
+                Already have an account?
+                <a asp-page="./Login">Login</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .auth-page {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg,#f8faf8,#e8f5e9);
+    }
+
+    .auth-card {
+        background: #fff;
+        padding: 2.5rem;
+        max-width: 420px;
+        width: 100%;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0,0,0,.1);
+    }
+
+    .auth-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .auth-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg,#1a5d2b,#2e7d42);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+    }
+
+    .logo-img {
+        width: 48px;
+        filter: brightness(0) invert(1);
+    }
+
+    .password-wrapper {
+        position: relative;
+    }
+
+    .password-input {
+        padding-right: 44px;
+    }
+
+    .eye-btn {
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+    }
+
+        .eye-btn img {
+            width: 22px;
+            height: 22px;
+        }
+
+    .btn-main {
+        background: linear-gradient(135deg,#1a5d2b,#2e7d42);
+        color: #fff;
+        border: none;
+    }
+
+    .btn-outline {
+        border: 1px solid #ccc;
+    }
+
+    .auth-switch {
+        margin-top: 1.5rem;
+        text-align: center;
+    }
+
+        .auth-switch a {
+            color: #1a5d2b;
+            font-weight: 600;
+        }
+</style>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function togglePwd(id, img) {
+            const input = document.getElementById(id);
+            if (input.type === "password") {
+                input.type = "text";
+                img.src = "/images/unhide.png";
+            } else {
+                input.type = "password";
+                img.src = "/images/hide.png";
+            }
+        }
+    </script>
+}

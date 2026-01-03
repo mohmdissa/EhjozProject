@@ -16,9 +16,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
         connectionString,
         b => b.MigrationsAssembly("EhjozProject.Infrastructure")
     ));
-
-// Add Identity with ApplicationUser (ONLY ONCE - NO DUPLICATE!)
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 {
     options.SignIn.RequireConfirmedAccount = false;
     options.Password.RequireDigit = false;
@@ -26,9 +24,9 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     options.Password.RequireNonAlphanumeric = false;
     options.Password.RequireUppercase = false;
 })
-.AddEntityFrameworkStores<ApplicationDbContext>()
-.AddDefaultTokenProviders()
-.AddDefaultUI();
+.AddRoles<IdentityRole>()
+.AddEntityFrameworkStores<ApplicationDbContext>();
+
 
 // Add Application Services
 builder.Services.AddApplicationServices();
