@@ -9,12 +9,11 @@ namespace EhjozProject.Infrastructure.Data
     {
         public static async Task SeedAdminUserAsync(IServiceProvider serviceProvider)
         {
-            using var scope = serviceProvider.CreateScope();
-            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+            var context = serviceProvider.GetRequiredService<ApplicationDbContext>();
 
-            // Ensure database is created
-            await context.Database.EnsureCreatedAsync();
+            // Apply migrations if needed
+            await context.Database.MigrateAsync();
 
             // Check if admin user already exists
             var adminEmail = "admin@ehjoz.com";

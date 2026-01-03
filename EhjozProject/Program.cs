@@ -63,7 +63,10 @@ using (var scope = app.Services.CreateScope())
 {
     try
     {
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+        logger.LogInformation("Seeding admin user...");
         await EhjozProject.Infrastructure.Data.DbInitializer.SeedAdminUserAsync(scope.ServiceProvider);
+        logger.LogInformation("Admin user seeded successfully.");
     }
     catch (Exception ex)
     {
