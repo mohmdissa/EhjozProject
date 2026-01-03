@@ -38,11 +38,9 @@
                         </li>
                         @if (User.Identity != null && User.Identity.IsAuthenticated)
                         {
-                            @{
-                                var currentUser = await UserManager.GetUserAsync(User);
-                                var isOwner = currentUser != null && currentUser.Role == "Owner";
-                                var isAdmin = currentUser != null && currentUser.Role == "Admin";
-                            }
+                            var currentUser = await UserManager.GetUserAsync(User);
+                            var isOwner = currentUser != null && currentUser.Role == "Owner";
+                            var isAdmin = currentUser != null && currentUser.Role == "Admin";
                             
                             @if (isOwner)
                             {
