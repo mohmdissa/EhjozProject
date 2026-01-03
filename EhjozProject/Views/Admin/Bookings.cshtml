@@ -1,0 +1,64 @@
+@model EhjozProject.Web.ViewModels.Admin.BookingManagementViewModel
+@{
+    ViewData["Title"] = "Bookings Management";
+}
+
+<div class="admin-page">
+    <div class="page-header">
+        <div>
+            <h1>Bookings Management</h1>
+            <p>View all bookings</p>
+        </div>
+        <a asp-action="Dashboard" class="btn btn-outline-secondary">Back to Dashboard</a>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (Model.Bookings.Any())
+    {
+        <div class="table-container">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Customer</th>
+                        <th>Stadium</th>
+                        <th>Date</th>
+                        <th>Total Price</th>
+                        <th>Status</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var booking in Model.Bookings.OrderByDescending(b => b.BookingDate))
+                    {
+                        <tr>
+                            <td>@booking.Id</td>
+                            <td>@booking.CustomerName</td>
+                            <td>@booking.StadiumName</td>
+                            <td>@booking.BookingDate.ToString("yyyy-MM-dd HH:mm")</td>
+                            <td>$@booking.TotalPrice</td>
+                            <td>
+                                <span class="badge bg-@(booking.Status == "Confirmed" ? "success" : booking.Status == "Pending" ? "warning" : booking.Status == "Cancelled" ? "danger" : "info")">
+                                    @booking.Status
+                                </span>
+                            </td>
+                            <td>@(booking.Notes ?? "-")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">No bookings found.</div>
+    }
+</div>
+

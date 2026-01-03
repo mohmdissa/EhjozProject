@@ -1,0 +1,86 @@
+@model EhjozProject.Web.ViewModels.Admin.SubscriptionPlanManagementViewModel
+@{
+    ViewData["Title"] = "Subscription Plans Management";
+}
+
+<div class="admin-page">
+    <div class="page-header">
+        <div>
+            <h1>Subscription Plans Management</h1>
+            <p>Manage subscription plans</p>
+        </div>
+        <a asp-action="Dashboard" class="btn btn-outline-secondary">Back to Dashboard</a>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (Model.Plans.Any())
+    {
+        <div class="table-container">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Price</th>
+                        <th>Duration (Days)</th>
+                        <th>Max Stadiums</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var plan in Model.Plans)
+                    {
+                        <tr>
+                            <td>@plan.Name</td>
+                            <td>@(plan.Description ?? "-")</td>
+                            <td>$@plan.Price</td>
+                            <td>@plan.DurationDays</td>
+                            <td>@plan.MaxStadiums</td>
+                            <td>
+                                @if (plan.IsActive)
+                                {
+                                    <span class="badge bg-success">Active</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Inactive</span>
+                                }
+                            </td>
+                            <td>
+                                @if (!plan.IsActive)
+                                {
+                                    <form asp-action="AcceptPlan" method="post" style="display:inline;">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@plan.Id" />
+                                        <button type="submit" class="btn btn-sm btn-success">Accept</button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <form asp-action="DeactivatePlan" method="post" style="display:inline;">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@plan.Id" />
+                                        <button type="submit" class="btn btn-sm btn-danger">Deactivate</button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">No subscription plans found.</div>
+    }
+</div>
+

@@ -1,0 +1,54 @@
+@model EhjozProject.Web.ViewModels.Admin.UserManagementViewModel
+@{
+    ViewData["Title"] = "Users Management";
+}
+
+<div class="admin-page">
+    <div class="page-header">
+        <div>
+            <h1>Users Management</h1>
+            <p>View and manage all users</p>
+        </div>
+        <a asp-action="Dashboard" class="btn btn-outline-secondary">Back to Dashboard</a>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (Model.Users.Any())
+    {
+        <div class="table-container">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Full Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>City</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model.Users)
+                    {
+                        <tr>
+                            <td>@user.FullName</td>
+                            <td>@user.Email</td>
+                            <td>@user.PhoneNumber</td>
+                            <td>@user.City</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">No users found.</div>
+    }
+</div>
+

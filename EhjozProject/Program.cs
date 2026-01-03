@@ -12,7 +12,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 // Add DbContext (ONLY ONCE)
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(
+    options.UseSqlite(
         connectionString,
         b => b.MigrationsAssembly("EhjozProject.Infrastructure")
     ));

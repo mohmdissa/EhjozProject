@@ -1,0 +1,110 @@
+@model EhjozProject.Web.ViewModels.Admin.SubscriptionManagementViewModel
+@{
+    ViewData["Title"] = "Subscriptions Management";
+}
+
+<div class="admin-page">
+    <div class="page-header">
+        <div>
+            <h1>Subscriptions Management</h1>
+            <p>View all subscriptions</p>
+        </div>
+        <a asp-action="Dashboard" class="btn btn-outline-secondary">Back to Dashboard</a>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (Model.Subscriptions.Any())
+    {
+        <div class="table-container">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Owner</th>
+                        <th>Plan</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var subscription in Model.Subscriptions.OrderByDescending(s => s.StartDate))
+                    {
+                        <tr>
+                            <td>@subscription.OwnerName</td>
+                            <td>@subscription.PlanName</td>
+                            <td>@subscription.StartDate.ToString("yyyy-MM-dd")</td>
+                            <td>@subscription.EndDate.ToString("yyyy-MM-dd")</td>
+                            <td>
+                                @if (subscription.IsActive)
+                                {
+                                    <span class="badge bg-success">Active</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Inactive</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">No subscriptions found.</div>
+    }
+</div>
+
+<style>
+    .admin-page {
+        padding: 1.5rem 0;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .page-header h1 {
+        color: #1a5d2b;
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+    }
+
+    .page-header p {
+        color: #666;
+        margin: 0;
+    }
+
+    .table-container {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        overflow-x: auto;
+    }
+
+    .table {
+        margin-bottom: 0;
+    }
+
+    .table thead th {
+        border-bottom: 2px solid #dee2e6;
+        font-weight: 600;
+        color: #333;
+    }
+</style>
+

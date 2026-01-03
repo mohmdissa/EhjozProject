@@ -1,0 +1,77 @@
+@model EhjozProject.Web.ViewModels.Admin.StadiumManagementViewModel
+@{
+    ViewData["Title"] = "Stadiums Management";
+}
+
+<div class="admin-page">
+    <div class="page-header">
+        <div>
+            <h1>Stadiums Management</h1>
+            <p>View and manage all stadiums</p>
+        </div>
+        <a asp-action="Dashboard" class="btn btn-outline-secondary">Back to Dashboard</a>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (Model.Stadiums.Any())
+    {
+        <div class="table-container">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>City</th>
+                        <th>Address</th>
+                        <th>Price/Hour</th>
+                        <th>Owner</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var stadium in Model.Stadiums)
+                    {
+                        <tr>
+                            <td>@stadium.Name</td>
+                            <td>@stadium.City</td>
+                            <td>@stadium.Address</td>
+                            <td>$@stadium.PricePerHour</td>
+                            <td>@stadium.OwnerName</td>
+                            <td>
+                                @if (stadium.IsActive)
+                                {
+                                    <span class="badge bg-success">Active</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Inactive</span>
+                                }
+                            </td>
+                            <td>
+                                <form asp-action="ToggleStadiumStatus" method="post" style="display:inline;">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@stadium.Id" />
+                                    <button type="submit" class="btn btn-sm @(stadium.IsActive ? "btn-danger" : "btn-success")">
+                                        @(stadium.IsActive ? "Deactivate" : "Activate")
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">No stadiums found.</div>
+    }
+</div>
+
