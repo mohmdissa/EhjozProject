@@ -227,8 +227,9 @@ namespace EhjozProject.Web.Controllers
                 return NotFound();
             }
 
+            var oldStatus = stadium.IsActive;
             await _stadiumService.ToggleStadiumStatusAsync(id);
-            TempData["Success"] = $"Stadium {stadium.Name} status has been {(stadium.IsActive ? "deactivated" : "activated")}.";
+            TempData["Success"] = $"Stadium {stadium.Name} status has been {(oldStatus ? "deactivated" : "activated")}.";
             return RedirectToAction(nameof(Stadiums));
         }
 
