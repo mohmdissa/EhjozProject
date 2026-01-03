@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EhjozProject.Web.Controllers
 {
-    [Authorize]
     public class AdminController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
