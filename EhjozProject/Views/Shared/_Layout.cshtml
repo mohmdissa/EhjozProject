@@ -12,7 +12,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    @await RenderSectionAsync("Styles", required: false)
+    @using Microsoft.AspNetCore.Identity
+@using EhjozProject.Domain.Models.Identity
+@inject UserManager<ApplicationUser> UserManager
+@await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
     <header>
@@ -35,14 +38,25 @@
                         </li>
                         @if (User.Identity != null && User.Identity.IsAuthenticated)
                         {
-                            <!-- Show Owner Dashboard link if user is Owner -->
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Owner" asp-action="Dashboard">Owner Dashboard</a>
-                            </li>
-                            <!-- Show Admin Dashboard link -->
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Admin" asp-action="Dashboard">Admin Dashboard</a>
-                            </li>
+                            @{
+                                var currentUser = await UserManager.GetUserAsync(User);
+                                var isOwner = currentUser != null && currentUser.Role == "Owner";
+                                var isAdmin = currentUser != null && currentUser.Role == "Admin";
+                            }
+                            
+                            @if (isOwner)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="Owner" asp-action="Dashboard">Owner Dashboard</a>
+                                </li>
+                            }
+                            
+                            @if (isAdmin)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="Admin" asp-action="Dashboard">Admin Dashboard</a>
+                                </li>
+                            }
                         }else{
                         <li class="nav-item">
                                 <a class="nav-link text-dark" asp-controller="Stadium" asp-action="Index">Fill Something</a>

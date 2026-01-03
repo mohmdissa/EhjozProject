@@ -58,6 +58,20 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+// Seed admin user
+using (var scope = app.Services.CreateScope())
+{
+    try
+    {
+        await EhjozProject.Infrastructure.Data.DbInitializer.SeedAdminUserAsync(scope.ServiceProvider);
+    }
+    catch (Exception ex)
+    {
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred seeding the database.");
+    }
+}
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
