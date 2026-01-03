@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace EhjozProject.Data.Migrations
+namespace EhjozProject.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251226232724_stadiums")]
-    partial class stadiums
+    [Migration("20260103001243_aaa")]
+    partial class aaa
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,18 +33,26 @@ namespace EhjozProject.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime?>("ArchivedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("BookingDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool?>("IsArchived")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Notes")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<int>("StadiumId")
                         .HasColumnType("int");
 
                     b.Property<string>("Status")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("TimeSlotId")
                         .HasColumnType("int");
@@ -94,7 +102,6 @@ namespace EhjozProject.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("FullName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool?>("IsApproved")

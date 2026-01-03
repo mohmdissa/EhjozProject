@@ -1,0 +1,324 @@
+﻿@model IEnumerable<EhjozProject.Domain.Models.Booking.Booking>
+@{
+    ViewData["Title"] = "Recycle Bin";
+}
+
+<div class="recycle-bin-page">
+    <div class="page-header">
+        <div>
+            <h1>
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                </svg>
+                Recycle Bin
+            </h1>
+            <p>Archived bookings - Restore or delete permanently</p>
+        </div>
+        @if (Model != null && Model.Any())
+        {
+            <form asp-action="EmptyRecycleBin" method="post" onsubmit="return confirm('Are you sure you want to permanently delete ALL archived bookings? This cannot be undone!');">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-danger">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                    Empty Recycle Bin
+                </button>
+            </form>
+        }
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="archived-list">
+            @foreach (var booking in Model)
+            {
+                <div class="archived-card">
+                    <div class="archived-content">
+                        <div class="booking-image">
+                            <img src="@(booking.Stadium?.ImageUrl ?? "https://images.unsplash.com/photo-1574629810360-7efbbe195018?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80")" alt="@booking.Stadium?.Name">
+                        </div>
+
+                        <div class="booking-info">
+                            <h4>@booking.Stadium?.Name</h4>
+                            <div class="info-details">
+                                <span class="detail">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                        <circle cx="12" cy="7" r="4"></circle>
+                                    </svg>
+                                    @(booking.User?.FullName ?? booking.User?.Email)
+                                </span>
+                                <span class="detail">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                                    </svg>
+                                    @booking.BookingDate.ToString("MMM dd, yyyy")
+                                </span>
+                                <span class="detail">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <polyline points="12 6 12 12 16 14"></polyline>
+                                    </svg>
+                                    @booking.TimeSlot?.StartTime.ToString("hh:mm tt")
+                                </span>
+                            </div>
+                            <div class="archived-meta">
+                                <span class="status-badge @booking.Status.ToLower()">@booking.Status</span>
+                                <span class="archived-date">
+                                    Archived: @(booking.ArchivedDate?.ToString("MMM dd, yyyy") ?? "N/A")
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="booking-price">
+                            <span class="amount">$@booking.TotalPrice</span>
+                        </div>
+                    </div>
+
+                    <div class="archived-actions">
+                        <form asp-action="RestoreBooking" asp-route-id="@booking.Id" method="post" style="display:inline;">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-success btn-sm">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                                    <path d="M3 3v5h5"></path>
+                                </svg>
+                                Restore
+                            </button>
+                        </form>
+                        <form asp-action="DeletePermanently" asp-route-id="@booking.Id" method="post" style="display:inline;" onsubmit="return confirm('Delete this booking permanently? This cannot be undone!');">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-outline-danger btn-sm">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                </svg>
+                                Delete Forever
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+            <h3>Recycle Bin is Empty</h3>
+            <p>No archived bookings. Completed bookings can be archived here.</p>
+            <a asp-action="Bookings" class="btn btn-outline-primary">Go to Bookings</a>
+        </div>
+    }
+
+    <div class="mt-4">
+        <a asp-action="Bookings" class="btn btn-outline-secondary">← Back to Bookings</a>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .recycle-bin-page {
+            padding: 1.5rem 0;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+            .page-header h1 {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                font-size: 1.75rem;
+                font-weight: 700;
+                color: #666;
+                margin-bottom: 0.25rem;
+            }
+
+            .page-header p {
+                color: #999;
+                margin: 0;
+            }
+
+            .page-header .btn-danger {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+        .archived-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .archived-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.25rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border-left: 4px solid #9e9e9e;
+        }
+
+        .archived-content {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            flex-wrap: wrap;
+        }
+
+        .booking-image img {
+            width: 80px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+            opacity: 0.7;
+        }
+
+        .booking-info {
+            flex: 1;
+            min-width: 200px;
+        }
+
+            .booking-info h4 {
+                font-size: 1.1rem;
+                font-weight: 600;
+                color: #333;
+                margin-bottom: 0.5rem;
+            }
+
+        .info-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+            .info-details .detail {
+                display: flex;
+                align-items: center;
+                gap: 0.25rem;
+                color: #666;
+                font-size: 0.85rem;
+            }
+
+                .info-details .detail svg {
+                    color: #999;
+                }
+
+        .archived-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .status-badge {
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+            .status-badge.completed {
+                background: #e3f2fd;
+                color: #1976d2;
+            }
+
+            .status-badge.cancelled {
+                background: #ffebee;
+                color: #c62828;
+            }
+
+            .status-badge.confirmed {
+                background: #e8f5e9;
+                color: #2e7d32;
+            }
+
+            .status-badge.pending {
+                background: #fff3e0;
+                color: #f57c00;
+            }
+
+        .archived-date {
+            font-size: 0.8rem;
+            color: #999;
+        }
+
+        .booking-price .amount {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #666;
+        }
+
+        .archived-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+
+            .archived-actions .btn {
+                display: flex;
+                align-items: center;
+                gap: 0.25rem;
+            }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+            .empty-state svg {
+                color: #ddd;
+                margin-bottom: 1rem;
+            }
+
+            .empty-state h3 {
+                color: #666;
+                margin-bottom: 0.5rem;
+            }
+
+            .empty-state p {
+                color: #999;
+                margin-bottom: 1.5rem;
+            }
+
+        @@media (max-width: 768px) {
+            .archived-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .booking-price {
+                margin-top: 0.5rem;
+            }
+        }
+    </style>
+}

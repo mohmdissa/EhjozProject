@@ -12,9 +12,15 @@ namespace EhjozProject.Infrastructure
         {
             // Register Repositories
             services.AddScoped<IStadiumRepository, StadiumRepository>();
+            services.AddScoped<IBookingRepository, BookingRepository>();
+            services.AddScoped<ITimeSlotRepository, TimeSlotRepository>();
+            services.AddScoped<IPaymentRepository, PaymentRepository>();
 
             // Register Services
             services.AddScoped<IStadiumService, StadiumService>();
+            services.AddScoped<IBookingService, BookingService>();
+            services.AddScoped<ITimeSlotService, TimeSlotService>();
+            services.AddScoped<IPaymentService, PaymentService>();
 
             return services;
         }

@@ -1,13 +1,26 @@
 ﻿@model IEnumerable<EhjozProject.Domain.Models.Booking.Booking>
-
 @{
     ViewData["Title"] = "Stadium Bookings";
+    var archivedCount = ViewBag.ArchivedCount ?? 0;
 }
 
 <div class="owner-bookings-page">
     <div class="page-header">
-        <h1>Stadium Bookings</h1>
-        <p>View and manage bookings for your stadiums</p>
+        <div>
+            <h1>Stadium Bookings</h1>
+            <p>View and manage bookings for your stadiums</p>
+        </div>
+        <a asp-action="RecycleBin" class="btn btn-outline-secondary recycle-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+            Recycle Bin
+            @if (archivedCount > 0)
+            {
+                <span class="badge bg-secondary">@archivedCount</span>
+            }
+        </a>
     </div>
 
     @if (TempData["Success"] != null)
@@ -43,10 +56,6 @@
                     <option value="Completed">Completed</option>
                     <option value="Cancelled">Cancelled</option>
                 </select>
-            </div>
-            <div class="col-md-3">
-                <label class="form-label">Date</label>
-                <input type="date" name="date" class="form-control" onchange="this.form.submit()">
             </div>
         </form>
     </div>
@@ -111,6 +120,30 @@
                                             </button>
                                         </form>
                                     }
+                                    @if (booking.Status == "Confirmed")
+                                    {
+                                        <form asp-action="CompleteBooking" asp-route-id="@booking.Id" method="post" style="display:inline;">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm btn-primary" title="Mark as Completed">
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    }
+                                    @if (booking.Status == "Completed" || booking.Status == "Cancelled")
+                                    {
+                                        <form asp-action="ArchiveBooking" asp-route-id="@booking.Id" method="post" style="display:inline;">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm btn-outline-secondary" title="Move to Recycle Bin">
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    }
                                 </div>
                             </td>
                         </tr>
@@ -145,7 +178,12 @@
         }
 
         .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
             .page-header h1 {
@@ -158,6 +196,16 @@
             .page-header p {
                 color: #666;
                 margin: 0;
+            }
+
+        .recycle-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+            .recycle-btn .badge {
+                margin-left: 0.25rem;
             }
 
         .filter-section {
