@@ -1,0 +1,79 @@
+@model IEnumerable<EhjozProject.Domain.Models.Stadium.Stadium>
+
+<!-- Results Count -->
+<div class="results-info">
+    @if (Model != null && Model.Any())
+    {
+        <p><strong>@Model.Count()</strong> stadiums found</p>
+    }
+    else
+    {
+        <p>No stadiums found</p>
+    }
+</div>
+
+<!-- Stadiums Grid -->
+<section class="stadiums-section">
+    <div class="stadiums-grid">
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var stadium in Model)
+            {
+                <div class="stadium-card" onclick="window.location.href='@Url.Action("Details", "Stadium", new { id = stadium.Id })'">
+                    <div class="stadium-image">
+                        <img src="@(stadium.ImageUrl ?? "https://images.unsplash.com/photo-1574629810360-7efbbe195018?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80")" alt="@stadium.Name">
+                        @if (stadium.IsActive)
+                        {
+                            <span class="stadium-badge available">Available</span>
+                        }
+                        else
+                        {
+                            <span class="stadium-badge unavailable">Unavailable</span>
+                        }
+                    </div>
+                    <div class="stadium-info">
+                        <h3 class="stadium-name">@stadium.Name</h3>
+                        <div class="stadium-location">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                            <span>@stadium.City, @stadium.Address</span>
+                        </div>
+                        @if (!string.IsNullOrEmpty(stadium.Description))
+                        {
+                            <p class="stadium-description">@stadium.Description</p>
+                        }
+                        <div class="stadium-meta">
+                            <div class="stadium-price">
+                                <span class="price">$@stadium.PricePerHour</span>
+                                <span class="period">/ hour</span>
+                            </div>
+                        </div>
+                        <a asp-controller="Stadium" asp-action="Details" asp-route-id="@stadium.Id" class="btn btn-success btn-book">
+                            View &amp; Book
+                        </a>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="no-stadiums">
+                <div class="no-stadiums-icon">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M12 2C12 2 14.5 5.5 14.5 12C14.5 18.5 12 22 12 22"></path>
+                        <path d="M12 2C12 2 9.5 5.5 9.5 12C9.5 18.5 12 22 12 22"></path>
+                        <line x1="2" y1="12" x2="22" y2="12"></line>
+                    </svg>
+                </div>
+                <h3>No Stadiums Found</h3>
+                <p>There are no stadiums matching your criteria. Try adjusting your filters or check back later.</p>
+                <a asp-controller="Stadium" asp-action="Index" class="btn btn-outline-success">Clear Filters</a>
+            </div>
+        }
+    </div>
+</section>
+
+

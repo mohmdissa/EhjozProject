@@ -14,7 +14,7 @@ namespace EhjozProject.Web.Controllers
         }
 
         // GET: Stadium
-        public async Task<IActionResult> Index(string? city, decimal? maxPrice)
+        public async Task<IActionResult> Index(string? city, decimal? maxPrice, string? q)
         {
             var stadiums = await _stadiumService.GetAllStadiumsAsync();
 
@@ -28,6 +28,26 @@ namespace EhjozProject.Web.Controllers
             if (maxPrice.HasValue)
             {
                 stadiums = stadiums.Where(s => s.PricePerHour <= maxPrice.Value).ToList();
+                ViewBag.SelectedMaxPrice = maxPrice.Value;
+            }
+
+            if (!string.IsNullOrWhiteSpace(q))
+            {
+                var needle = q.Trim().ToLower();
+                stadiums = stadiums.Where(s =>
+                        (s.Name != null && s.Name.ToLower().Contains(needle)) ||
+                        (s.City != null && s.City.ToLower().Contains(needle)) ||
+                        (s.Address != null && s.Address.ToLower().Contains(needle)))
+                    .ToList();
+                ViewBag.SearchQuery = q;
+            }
+
+            // If request is AJAX, return only the results partial (better UX, no full refresh)
+            var isAjax = Request.Headers["X-Requested-With"] == "XMLHttpRequest" ||
+                        string.Equals(Request.Query["ajax"], "1", StringComparison.OrdinalIgnoreCase);
+            if (isAjax)
+            {
+                return PartialView("_StadiumResults", stadiums);
             }
 
             return View(stadiums);

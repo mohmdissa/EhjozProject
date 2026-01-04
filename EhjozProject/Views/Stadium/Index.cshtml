@@ -13,7 +13,7 @@
 
 <!-- Filters Section -->
 <section class="filters-section">
-    <form class="filters-form" asp-controller="Stadium" asp-action="Index" method="get">
+    <form id="stadiumFiltersForm" class="filters-form" asp-controller="Stadium" asp-action="Index" method="get" autocomplete="off">
         <div class="row g-3 align-items-end">
             <div class="col-md-5">
                 <label for="city" class="form-label">City</label>
@@ -30,97 +30,117 @@
                 <label for="maxPrice" class="form-label">Max Price/Hour</label>
                 <select id="maxPrice" name="maxPrice" class="form-select">
                     <option value="">Any Price</option>
-                    <option value="30">Up to $30</option>
-                    <option value="50">Up to $50</option>
-                    <option value="75">Up to $75</option>
-                    <option value="100">Up to $100</option>
+                    <option value="30" selected="@(ViewBag.SelectedMaxPrice?.ToString() == "30")">Up to $30</option>
+                    <option value="50" selected="@(ViewBag.SelectedMaxPrice?.ToString() == "50")">Up to $50</option>
+                    <option value="75" selected="@(ViewBag.SelectedMaxPrice?.ToString() == "75")">Up to $75</option>
+                    <option value="100" selected="@(ViewBag.SelectedMaxPrice?.ToString() == "100")">Up to $100</option>
                 </select>
             </div>
             <div class="col-md-3">
-                <button type="submit" class="btn btn-success w-100">
+                <label for="q" class="form-label">Search</label>
+                <input id="q" name="q" value="@(ViewBag.SearchQuery ?? "")" class="form-control" placeholder="Search by name or location..." />
+            </div>
+        </div>
+
+        <div class="row g-3 mt-1">
+            <div class="col-md-3">
+                <button id="applyFiltersBtn" type="submit" class="btn btn-success w-100">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="11" cy="11" r="8"></circle>
                         <path d="m21 21-4.35-4.35"></path>
                     </svg>
-                    Filter Results
+                    Apply Filters
                 </button>
+            </div>
+            <div class="col-md-3">
+                <a asp-controller="Stadium" asp-action="Index" class="btn btn-outline-success w-100">Clear</a>
+            </div>
+            <div class="col-md-6 d-flex align-items-center">
+                <small class="text-muted">
+                    Tip: filters update automatically as you change them.
+                </small>
             </div>
         </div>
     </form>
 </section>
 
-<!-- Results Count -->
-<div class="results-info">
-    @if (Model != null && Model.Any())
-    {
-        <p><strong>@Model.Count()</strong> stadiums found</p>
-    }
-    else
-    {
-        <p>No stadiums found</p>
-    }
+<div id="stadiumResultsWrap" class="position-relative">
+    <div id="stadiumResultsLoading" class="position-absolute top-0 start-0 w-100 h-100 d-none"
+         style="background: rgba(255,255,255,.65); z-index: 10;">
+        <div class="d-flex h-100 align-items-center justify-content-center">
+            <div class="text-center">
+                <div class="spinner-border text-success" role="status" aria-label="Loading"></div>
+                <div class="text-muted small mt-2">Updating results…</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="stadiumResults">
+        @await Html.PartialAsync("_StadiumResults", Model)
+    </div>
 </div>
 
-<!-- Stadiums Grid -->
-<section class="stadiums-section">
-    <div class="stadiums-grid">
-        @if (Model != null && Model.Any())
-        {
-            @foreach (var stadium in Model)
-            {
-                <div class="stadium-card" onclick="window.location.href='@Url.Action("Details", "Stadium", new { id = stadium.Id })'">
-                    <div class="stadium-image">
-                        <img src="@(stadium.ImageUrl ?? "https://images.unsplash.com/photo-1574629810360-7efbbe195018?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80")" alt="@stadium.Name">
-                        @if (stadium.IsActive)
-                        {
-                            <span class="stadium-badge available">Available</span>
-                        }
-                        else
-                        {
-                            <span class="stadium-badge unavailable">Unavailable</span>
-                        }
-                    </div>
-                    <div class="stadium-info">
-                        <h3 class="stadium-name">@stadium.Name</h3>
-                        <div class="stadium-location">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                                <circle cx="12" cy="10" r="3"></circle>
-                            </svg>
-                            <span>@stadium.City, @stadium.Address</span>
-                        </div>
-                        @if (!string.IsNullOrEmpty(stadium.Description))
-                        {
-                            <p class="stadium-description">@stadium.Description</p>
-                        }
-                        <div class="stadium-meta">
-                            <div class="stadium-price">
-                                <span class="price">$@stadium.PricePerHour</span>
-                                <span class="period">/ hour</span>
-                            </div>
-                        </div>
-                        <a asp-controller="Stadium" asp-action="Details" asp-route-id="@stadium.Id" class="btn btn-success btn-book">
-                            View & Book
-                        </a>
-                    </div>
-                </div>
+@section Scripts {
+    <script>
+        (function () {
+            const $form = $('#stadiumFiltersForm');
+            const $results = $('#stadiumResults');
+            const $loading = $('#stadiumResultsLoading');
+            let debounceTimer = null;
+            let activeRequest = null;
+
+            function showLoading(on) {
+                $loading.toggleClass('d-none', !on);
+                $('#applyFiltersBtn').prop('disabled', on);
             }
-        }
-        else
-        {
-            <div class="no-stadiums">
-                <div class="no-stadiums-icon">
-                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <path d="M12 2C12 2 14.5 5.5 14.5 12C14.5 18.5 12 22 12 22"></path>
-                        <path d="M12 2C12 2 9.5 5.5 9.5 12C9.5 18.5 12 22 12 22"></path>
-                        <line x1="2" y1="12" x2="22" y2="12"></line>
-                    </svg>
-                </div>
-                <h3>No Stadiums Found</h3>
-                <p>There are no stadiums matching your criteria. Try adjusting your filters or check back later.</p>
-                <a asp-controller="Stadium" asp-action="Index" class="btn btn-outline-success">Clear Filters</a>
-            </div>
-        }
-    </div>
-</section>
+
+            function updateUrl(queryString) {
+                const newUrl = window.location.pathname + (queryString ? ('?' + queryString) : '');
+                window.history.replaceState({}, '', newUrl);
+            }
+
+            function fetchResults() {
+                const queryString = $form.serialize();
+                updateUrl(queryString);
+
+                if (activeRequest && activeRequest.readyState !== 4) {
+                    activeRequest.abort();
+                }
+
+                showLoading(true);
+                activeRequest = $.ajax({
+                    url: $form.attr('action'),
+                    type: 'GET',
+                    data: queryString,
+                    cache: false
+                }).done(function (html) {
+                    // If server returns full view for any reason, extract the partial container as a fallback
+                    const $html = $('<div>').append($.parseHTML(html));
+                    const partial = $html.find('#stadiumResults').length ? $html.find('#stadiumResults').html() : html;
+                    $results.html(partial);
+                }).fail(function (xhr, status) {
+                    if (status !== 'abort') {
+                        $results.html('<div class="alert alert-danger">Could not update results. Please try again.</div>');
+                    }
+                }).always(function () {
+                    showLoading(false);
+                });
+            }
+
+            function scheduleFetch() {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(fetchResults, 250);
+            }
+
+            // Prevent full page refresh
+            $form.on('submit', function (e) {
+                e.preventDefault();
+                fetchResults();
+            });
+
+            // Auto update on changes
+            $form.on('change', 'select', scheduleFetch);
+            $form.on('input', '#q', scheduleFetch);
+        })();
+    </script>
+}
