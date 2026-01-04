@@ -408,11 +408,57 @@ namespace EhjozProject.Web.Controllers
                     Status = b.Status,
                     CustomerName = b.User?.FullName ?? b.User?.Email ?? "N/A",
                     StadiumName = b.Stadium?.Name ?? "N/A",
-                    Notes = b.Notes
+                    Notes = b.Notes,
+                    IsArchived = b.IsArchived == true
                 }).ToList()
             };
 
             return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CancelBooking(int id)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (!IsAdmin(user))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            await _bookingService.CancelBookingAsync(id);
+            TempData["Success"] = $"Booking #{id} cancelled.";
+            return RedirectToAction(nameof(Bookings));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ArchiveBooking(int id)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (!IsAdmin(user))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            await _bookingService.ArchiveBookingAsync(id);
+            TempData["Success"] = $"Booking #{id} archived.";
+            return RedirectToAction(nameof(Bookings));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteBooking(int id)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (!IsAdmin(user))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            await _bookingService.DeletePermanentlyAsync(id);
+            TempData["Success"] = $"Booking #{id} deleted permanently.";
+            return RedirectToAction(nameof(Bookings));
         }
 
         #endregion

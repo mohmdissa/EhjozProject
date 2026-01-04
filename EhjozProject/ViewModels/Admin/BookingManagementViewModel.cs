@@ -14,6 +14,7 @@ namespace EhjozProject.Web.ViewModels.Admin
         public string CustomerName { get; set; } = null!;
         public string StadiumName { get; set; } = null!;
         public string? Notes { get; set; }
+        public bool IsArchived { get; set; }
     }
 }
 

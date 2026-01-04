@@ -37,6 +37,7 @@
                         <th>Total Price</th>
                         <th>Status</th>
                         <th>Notes</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -54,6 +55,28 @@
                                 </span>
                             </td>
                             <td>@(booking.Notes ?? "-")</td>
+                            <td>
+                                @if (!booking.IsArchived)
+                                {
+                                    <form asp-action="CancelBooking" method="post" style="display:inline;">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@booking.Id" />
+                                        <button type="submit" class="btn btn-sm btn-outline-warning">Cancel</button>
+                                    </form>
+
+                                    <form asp-action="ArchiveBooking" method="post" style="display:inline;">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@booking.Id" />
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary">Archive</button>
+                                    </form>
+                                }
+
+                                <form asp-action="DeleteBooking" method="post" style="display:inline;" onsubmit="return confirm('Delete this booking permanently?');">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@booking.Id" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                </form>
+                            </td>
                         </tr>
                     }
                 </tbody>
