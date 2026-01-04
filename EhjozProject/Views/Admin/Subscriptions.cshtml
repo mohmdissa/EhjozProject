@@ -70,7 +70,14 @@
                                 }
                                 else
                                 {
-                                    <span class="text-muted">—</span>
+                                    <form asp-action="ReactivateSubscription" method="post" style="display:inline;"
+                                          data-confirm="Reactivate this subscription?"
+                                          data-confirm-title="Reactivate subscription"
+                                          data-confirm-btn="Reactivate">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@subscription.Id" />
+                                        <button type="submit" class="btn btn-sm btn-outline-success">Reactivate</button>
+                                    </form>
                                 }
                             </td>
                         </tr>

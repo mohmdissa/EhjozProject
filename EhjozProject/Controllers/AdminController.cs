@@ -635,6 +635,47 @@ namespace EhjozProject.Web.Controllers
             return RedirectToAction(nameof(Subscriptions));
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ReactivateSubscription(int id)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (!IsAdmin(user))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            var subscription = await _subscriptionService.GetSubscriptionByIdAsync(id);
+            if (subscription == null)
+            {
+                return NotFound();
+            }
+
+            // Reactivate and extend end date if it already expired
+            var now = DateTime.UtcNow;
+            if (subscription.EndDate <= now)
+            {
+                // Try to extend based on plan duration (fallback: 30 days)
+                var durationDays = subscription.Plan?.DurationDays ?? 30;
+                subscription.EndDate = now.AddDays(durationDays);
+            }
+
+            subscription.IsActive = true;
+
+            await _subscriptionService.UpdateSubscriptionAsync(subscription);
+
+            // Best-effort: update owner's SubscriptionEndDate too
+            var owner = await _userManager.FindByIdAsync(subscription.OwnerId);
+            if (owner != null)
+            {
+                owner.SubscriptionEndDate = subscription.EndDate;
+                await _userManager.UpdateAsync(owner);
+            }
+
+            TempData["Success"] = $"Subscription #{id} reactivated.";
+            return RedirectToAction(nameof(Subscriptions));
+        }
+
         #endregion
     }
 }

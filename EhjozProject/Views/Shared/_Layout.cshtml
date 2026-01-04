@@ -73,7 +73,13 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                                <form class="form-inline"
+                                      asp-area="Identity"
+                                      asp-page="/Account/Logout"
+                                      asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })"
+                                      data-confirm="Are you sure you want to logout?"
+                                      data-confirm-title="Logout"
+                                      data-confirm-btn="Logout">
                                     <button type="submit" class="nav-link btn btn-link text-dark border-0">Logout</button>
                                 </form>
                             </li>
