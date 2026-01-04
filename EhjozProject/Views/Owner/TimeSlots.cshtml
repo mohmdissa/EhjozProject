@@ -56,7 +56,10 @@
                     <div class="slot-actions">
                         @if (slot.IsAvailable)
                         {
-                            <form asp-controller="Owner" asp-action="DeleteTimeSlot" asp-route-id="@slot.Id" method="post" style="display:inline;" onsubmit="return confirm('Delete this time slot?');">
+                            <form asp-controller="Owner" asp-action="DeleteTimeSlot" asp-route-id="@slot.Id" method="post" style="display:inline;"
+                                  data-confirm="Delete this time slot?"
+                                  data-confirm-title="Delete time slot"
+                                  data-confirm-btn="Delete">
                                 @Html.AntiForgeryToken()
                                 <button type="submit" class="btn btn-sm btn-outline-danger">
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

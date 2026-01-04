@@ -58,20 +58,28 @@
                             <td>
                                 @if (!booking.IsArchived)
                                 {
-                                    <form asp-action="CancelBooking" method="post" style="display:inline;">
-                                        @Html.AntiForgeryToken()
-                                        <input type="hidden" name="id" value="@booking.Id" />
-                                        <button type="submit" class="btn btn-sm btn-outline-warning">Cancel</button>
-                                    </form>
+                                    @if (!string.Equals(booking.Status, "Cancelled", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        <form asp-action="CancelBooking" method="post" style="display:inline;"
+                                              data-confirm="Cancel this booking?">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="id" value="@booking.Id" />
+                                            <button type="submit" class="btn btn-sm btn-outline-warning">Cancel</button>
+                                        </form>
+                                    }
 
-                                    <form asp-action="ArchiveBooking" method="post" style="display:inline;">
+                                    <form asp-action="ArchiveBooking" method="post" style="display:inline;"
+                                          data-confirm="Archive this booking?">
                                         @Html.AntiForgeryToken()
                                         <input type="hidden" name="id" value="@booking.Id" />
                                         <button type="submit" class="btn btn-sm btn-outline-secondary">Archive</button>
                                     </form>
                                 }
 
-                                <form asp-action="DeleteBooking" method="post" style="display:inline;" onsubmit="return confirm('Delete this booking permanently?');">
+                                <form asp-action="DeleteBooking" method="post" style="display:inline;"
+                                      data-confirm="Delete this booking permanently? This cannot be undone."
+                                      data-confirm-title="Delete booking"
+                                      data-confirm-btn="Delete">
                                     @Html.AntiForgeryToken()
                                     <input type="hidden" name="id" value="@booking.Id" />
                                     <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>

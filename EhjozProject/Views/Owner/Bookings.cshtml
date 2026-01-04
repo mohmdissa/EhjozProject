@@ -110,7 +110,10 @@
                                                 </svg>
                                             </button>
                                         </form>
-                                        <form asp-action="RejectBooking" asp-route-id="@booking.Id" method="post" style="display:inline;" onsubmit="return confirm('Reject this booking?');">
+                                        <form asp-action="RejectBooking" asp-route-id="@booking.Id" method="post" style="display:inline;"
+                                              data-confirm="Reject this booking?"
+                                              data-confirm-title="Reject booking"
+                                              data-confirm-btn="Reject">
                                             @Html.AntiForgeryToken()
                                             <button type="submit" class="btn btn-sm btn-danger" title="Reject">
                                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

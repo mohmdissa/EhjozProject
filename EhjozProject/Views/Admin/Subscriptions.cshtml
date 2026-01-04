@@ -59,7 +59,10 @@
                             <td>
                                 @if (subscription.IsActive)
                                 {
-                                    <form asp-action="DeactivateSubscription" method="post" style="display:inline;" onsubmit="return confirm('Deactivate this subscription?');">
+                                    <form asp-action="DeactivateSubscription" method="post" style="display:inline;"
+                                          data-confirm="Deactivate this subscription now?"
+                                          data-confirm-title="Deactivate subscription"
+                                          data-confirm-btn="Deactivate">
                                         @Html.AntiForgeryToken()
                                         <input type="hidden" name="id" value="@subscription.Id" />
                                         <button type="submit" class="btn btn-sm btn-outline-danger">Deactivate</button>

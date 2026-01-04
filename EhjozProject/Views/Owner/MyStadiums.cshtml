@@ -116,7 +116,10 @@
                                         </button>
                                     </form>
 
-                                    <form asp-action="DeleteStadium" asp-route-id="@stadium.Id" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this stadium?');">
+                                    <form asp-action="DeleteStadium" asp-route-id="@stadium.Id" method="post" style="display:inline;"
+                                          data-confirm="Delete this stadium? This cannot be undone."
+                                          data-confirm-title="Delete stadium"
+                                          data-confirm-btn="Delete">
                                         @Html.AntiForgeryToken()
                                         <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
                                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

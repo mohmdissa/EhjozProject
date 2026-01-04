@@ -78,7 +78,10 @@
                         </a>
                         @if (booking.Status == "Pending")
                         {
-                            <form asp-controller="Booking" asp-action="Cancel" asp-route-id="@booking.Id" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to cancel this booking?');">
+                            <form asp-controller="Booking" asp-action="Cancel" asp-route-id="@booking.Id" method="post" style="display:inline;"
+                                  data-confirm="Cancel this booking?"
+                                  data-confirm-title="Cancel booking"
+                                  data-confirm-btn="Cancel booking">
                                 @Html.AntiForgeryToken()
                                 <button type="submit" class="btn btn-outline-danger btn-sm">Cancel</button>
                             </form>

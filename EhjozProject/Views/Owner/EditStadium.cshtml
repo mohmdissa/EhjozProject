@@ -159,7 +159,10 @@
             <div class="danger-zone">
                 <h5>Danger Zone</h5>
                 <p>Once you delete a stadium, there is no going back. Please be certain.</p>
-                <form asp-action="DeleteStadium" asp-route-id="@Model.Id" method="post" onsubmit="return confirm('Are you sure you want to delete this stadium? This action cannot be undone.');">
+                <form asp-action="DeleteStadium" asp-route-id="@Model.Id" method="post"
+                      data-confirm="Delete this stadium? This action cannot be undone."
+                      data-confirm-title="Delete stadium"
+                      data-confirm-btn="Delete">
                     @Html.AntiForgeryToken()
                     <button type="submit" class="btn btn-danger">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

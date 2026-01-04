@@ -17,7 +17,10 @@
         </div>
         @if (Model != null && Model.Any())
         {
-            <form asp-action="EmptyRecycleBin" method="post" onsubmit="return confirm('Are you sure you want to permanently delete ALL archived bookings? This cannot be undone!');">
+            <form asp-action="EmptyRecycleBin" method="post"
+                  data-confirm="Permanently delete ALL archived bookings? This cannot be undone!"
+                  data-confirm-title="Empty recycle bin"
+                  data-confirm-btn="Delete all">
                 @Html.AntiForgeryToken()
                 <button type="submit" class="btn btn-danger">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -100,7 +103,10 @@
                                 Restore
                             </button>
                         </form>
-                        <form asp-action="DeletePermanently" asp-route-id="@booking.Id" method="post" style="display:inline;" onsubmit="return confirm('Delete this booking permanently? This cannot be undone!');">
+                        <form asp-action="DeletePermanently" asp-route-id="@booking.Id" method="post" style="display:inline;"
+                              data-confirm="Delete this booking permanently? This cannot be undone!"
+                              data-confirm-title="Delete booking"
+                              data-confirm-btn="Delete">
                             @Html.AntiForgeryToken()
                             <button type="submit" class="btn btn-outline-danger btn-sm">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
