@@ -3,14 +3,16 @@
     ViewData["Title"] = "Owners Management";
 }
 
-<div class="admin-page">
-    <div class="page-header">
+<div class="admin-shell">
+    <div class="admin-topbar">
         <div>
-            <h1>Owners Management</h1>
-            <p>View and manage all owners</p>
+            <h1 class="admin-title">Owners</h1>
+            <p class="admin-subtitle">Approve, reject, and review owner accounts</p>
         </div>
-        <a asp-action="Dashboard" class="btn btn-outline-secondary">Back to Dashboard</a>
+        <a asp-action="Dashboard" class="btn btn-outline-secondary">Back</a>
     </div>
+
+    @await Html.PartialAsync("_AdminNav")
 
     @if (TempData["Success"] != null)
     {
@@ -22,8 +24,10 @@
 
     @if (Model.Owners.Any())
     {
-        <div class="table-container">
-            <table class="table table-striped">
+        <div class="admin-card card">
+            <div class="card-header">All Owners</div>
+            <div class="card-body p-0">
+            <table class="table admin-table table-hover mb-0">
                 <thead>
                     <tr>
                         <th>Full Name</th>
@@ -76,6 +80,7 @@
                     }
                 </tbody>
             </table>
+            </div>
         </div>
     }
     else
@@ -83,4 +88,5 @@
         <div class="alert alert-info">No owners found.</div>
     }
 </div>
+
 

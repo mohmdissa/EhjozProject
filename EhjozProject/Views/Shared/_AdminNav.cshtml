@@ -1,0 +1,29 @@
+@{
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
+}
+
+<ul class="nav nav-pills admin-nav mb-3">
+    <li class="nav-item">
+        <a class="nav-link @(currentAction == "Dashboard" ? "active" : "")" asp-controller="Admin" asp-action="Dashboard">Dashboard</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link @(currentAction == "Users" ? "active" : "")" asp-controller="Admin" asp-action="Users">Users</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link @(currentAction == "Owners" ? "active" : "")" asp-controller="Admin" asp-action="Owners">Owners</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link @(currentAction == "Stadiums" ? "active" : "")" asp-controller="Admin" asp-action="Stadiums">Stadiums</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link @(currentAction == "Bookings" ? "active" : "")" asp-controller="Admin" asp-action="Bookings">Bookings</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link @(currentAction == "Plans" ? "active" : "")" asp-controller="Admin" asp-action="Plans">Plans</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link @(currentAction == "Subscriptions" ? "active" : "")" asp-controller="Admin" asp-action="Subscriptions">Subscriptions</a>
+    </li>
+</ul>
+
+

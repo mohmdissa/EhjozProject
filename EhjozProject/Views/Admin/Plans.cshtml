@@ -3,14 +3,16 @@
     ViewData["Title"] = "Subscription Plans Management";
 }
 
-<div class="admin-page">
-    <div class="page-header">
+<div class="admin-shell">
+    <div class="admin-topbar">
         <div>
-            <h1>Subscription Plans Management</h1>
-            <p>Manage subscription plans</p>
+            <h1 class="admin-title">Subscription Plans</h1>
+            <p class="admin-subtitle">Accept or deactivate plans</p>
         </div>
-        <a asp-action="Dashboard" class="btn btn-outline-secondary">Back to Dashboard</a>
+        <a asp-action="Dashboard" class="btn btn-outline-secondary">Back</a>
     </div>
+
+    @await Html.PartialAsync("_AdminNav")
 
     @if (TempData["Success"] != null)
     {
@@ -22,8 +24,10 @@
 
     @if (Model.Plans.Any())
     {
-        <div class="table-container">
-            <table class="table table-striped">
+        <div class="admin-card card">
+            <div class="card-header">All Plans</div>
+            <div class="card-body p-0">
+            <table class="table admin-table table-hover mb-0">
                 <thead>
                     <tr>
                         <th>Name</th>
@@ -76,6 +80,7 @@
                     }
                 </tbody>
             </table>
+            </div>
         </div>
     }
     else
@@ -83,4 +88,5 @@
         <div class="alert alert-info">No subscription plans found.</div>
     }
 </div>
+
 

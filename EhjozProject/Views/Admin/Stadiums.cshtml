@@ -3,14 +3,16 @@
     ViewData["Title"] = "Stadiums Management";
 }
 
-<div class="admin-page">
-    <div class="page-header">
+<div class="admin-shell">
+    <div class="admin-topbar">
         <div>
-            <h1>Stadiums Management</h1>
-            <p>View and manage all stadiums</p>
+            <h1 class="admin-title">Stadiums</h1>
+            <p class="admin-subtitle">Activate / deactivate stadiums and review ownership</p>
         </div>
-        <a asp-action="Dashboard" class="btn btn-outline-secondary">Back to Dashboard</a>
+        <a asp-action="Dashboard" class="btn btn-outline-secondary">Back</a>
     </div>
+
+    @await Html.PartialAsync("_AdminNav")
 
     @if (TempData["Success"] != null)
     {
@@ -22,8 +24,10 @@
 
     @if (Model.Stadiums.Any())
     {
-        <div class="table-container">
-            <table class="table table-striped">
+        <div class="admin-card card">
+            <div class="card-header">All Stadiums</div>
+            <div class="card-body p-0">
+            <table class="table admin-table table-hover mb-0">
                 <thead>
                     <tr>
                         <th>Name</th>
@@ -67,6 +71,7 @@
                     }
                 </tbody>
             </table>
+            </div>
         </div>
     }
     else
@@ -74,4 +79,5 @@
         <div class="alert alert-info">No stadiums found.</div>
     }
 </div>
+
 

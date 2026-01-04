@@ -3,14 +3,16 @@
     ViewData["Title"] = "Subscriptions Management";
 }
 
-<div class="admin-page">
-    <div class="page-header">
+<div class="admin-shell">
+    <div class="admin-topbar">
         <div>
-            <h1>Subscriptions Management</h1>
-            <p>View all subscriptions</p>
+            <h1 class="admin-title">Subscriptions</h1>
+            <p class="admin-subtitle">View all subscriptions</p>
         </div>
-        <a asp-action="Dashboard" class="btn btn-outline-secondary">Back to Dashboard</a>
+        <a asp-action="Dashboard" class="btn btn-outline-secondary">Back</a>
     </div>
+
+    @await Html.PartialAsync("_AdminNav")
 
     @if (TempData["Success"] != null)
     {
@@ -22,8 +24,10 @@
 
     @if (Model.Subscriptions.Any())
     {
-        <div class="table-container">
-            <table class="table table-striped">
+        <div class="admin-card card">
+            <div class="card-header">All Subscriptions</div>
+            <div class="card-body p-0">
+            <table class="table admin-table table-hover mb-0">
                 <thead>
                     <tr>
                         <th>Owner</th>
@@ -55,6 +59,7 @@
                     }
                 </tbody>
             </table>
+            </div>
         </div>
     }
     else
@@ -63,48 +68,4 @@
     }
 </div>
 
-<style>
-    .admin-page {
-        padding: 1.5rem 0;
-    }
-
-    .page-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 2rem;
-        flex-wrap: wrap;
-        gap: 1rem;
-    }
-
-    .page-header h1 {
-        color: #1a5d2b;
-        font-size: 1.75rem;
-        font-weight: 700;
-        margin-bottom: 0.25rem;
-    }
-
-    .page-header p {
-        color: #666;
-        margin: 0;
-    }
-
-    .table-container {
-        background: white;
-        border-radius: 12px;
-        padding: 1.5rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        overflow-x: auto;
-    }
-
-    .table {
-        margin-bottom: 0;
-    }
-
-    .table thead th {
-        border-bottom: 2px solid #dee2e6;
-        font-weight: 600;
-        color: #333;
-    }
-</style>
 
