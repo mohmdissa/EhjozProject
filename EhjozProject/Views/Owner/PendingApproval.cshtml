@@ -1,0 +1,22 @@
+@{
+    ViewData["Title"] = "Pending Approval";
+}
+
+<div class="container py-5" style="max-width: 720px;">
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-4 p-md-5">
+            <h1 class="h4 fw-bold mb-2" style="color:#1a5d2b;">Owner Account Pending Approval</h1>
+            <p class="text-muted mb-4">
+                Your owner account has been created successfully, but it must be approved by an admin before you can access the owner dashboard and manage stadiums.
+            </p>
+
+            <div class="alert alert-info mb-4">
+                Tip: Log in as admin and approve this owner from <strong>Admin → Owners</strong>.
+            </div>
+
+            <a asp-controller="Home" asp-action="Index" class="btn btn-success">Back to Home</a>
+        </div>
+    </div>
+</div>
+
+

@@ -53,7 +53,7 @@
                         City = model.City,
                         Address = model.Address,
                         Role = "Owner",
-                        IsApproved = true
+                        IsApproved = false
                     };
 
                     var result = await _userManager.CreateAsync(user, model.Password);
@@ -61,8 +61,8 @@
                     if (result.Succeeded)
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
-                        TempData["Success"] = "Registration successful! Welcome to Ehjoz.";
-                        return RedirectToAction(nameof(Dashboard));
+                        TempData["Success"] = "Registration successful! Your owner account is pending admin approval.";
+                        return RedirectToAction(nameof(PendingApproval));
                     }
 
                     foreach (var error in result.Errors)
@@ -90,6 +90,11 @@
                     return RedirectToAction("Index", "Home");
                 }
 
+                if (user.IsApproved != true)
+                {
+                    return RedirectToAction(nameof(PendingApproval));
+                }
+
                 var stadiums = await _stadiumService.GetStadiumsByOwnerIdAsync(user.Id);
 
                 ViewBag.TotalStadiums = stadiums.Count();
@@ -97,6 +102,28 @@
                 ViewBag.OwnerName = user.FullName ?? user.Email;
 
                 return View(stadiums);
+            }
+
+            #endregion
+
+            #region Approval
+
+            [Authorize]
+            [HttpGet]
+            public async Task<IActionResult> PendingApproval()
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null || user.Role != "Owner")
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+
+                if (user.IsApproved == true)
+                {
+                    return RedirectToAction(nameof(Dashboard));
+                }
+
+                return View();
             }
 
             #endregion
@@ -114,6 +141,10 @@
                 {
                     return RedirectToAction("Index", "Home");
                 }
+                if (user.IsApproved != true)
+                {
+                    return RedirectToAction(nameof(PendingApproval));
+                }
 
                 var stadiums = await _stadiumService.GetStadiumsByOwnerIdAsync(user.Id);
                 return View(stadiums);
@@ -130,6 +161,10 @@
                 {
                     return RedirectToAction("Index", "Home");
                 }
+                if (user.IsApproved != true)
+                {
+                    return RedirectToAction(nameof(PendingApproval));
+                }
 
                 return View(new StadiumViewModel());
             }
@@ -145,6 +180,10 @@
                 if (user == null || user.Role != "Owner")
                 {
                     return RedirectToAction("Index", "Home");
+                }
+                if (user.IsApproved != true)
+                {
+                    return RedirectToAction(nameof(PendingApproval));
                 }
 
                 if (ModelState.IsValid)
@@ -181,6 +220,10 @@
                 {
                     return RedirectToAction("Index", "Home");
                 }
+                if (user.IsApproved != true)
+                {
+                    return RedirectToAction(nameof(PendingApproval));
+                }
 
                 var stadium = await _stadiumService.GetStadiumByIdAsync(id);
 
@@ -215,6 +258,10 @@
                 if (user == null || user.Role != "Owner")
                 {
                     return RedirectToAction("Index", "Home");
+                }
+                if (user.IsApproved != true)
+                {
+                    return RedirectToAction(nameof(PendingApproval));
                 }
 
                 if (id != model.Id)
@@ -260,6 +307,10 @@
                 {
                     return RedirectToAction("Index", "Home");
                 }
+                if (user.IsApproved != true)
+                {
+                    return RedirectToAction(nameof(PendingApproval));
+                }
 
                 var stadium = await _stadiumService.GetStadiumByIdAsync(id);
 
@@ -285,6 +336,10 @@
                 if (user == null || user.Role != "Owner")
                 {
                     return RedirectToAction("Index", "Home");
+                }
+                if (user.IsApproved != true)
+                {
+                    return RedirectToAction(nameof(PendingApproval));
                 }
 
                 var stadium = await _stadiumService.GetStadiumByIdAsync(id);
@@ -366,6 +421,10 @@
             {
                 return RedirectToAction("Index", "Home");
             }
+            if (user.IsApproved != true)
+            {
+                return RedirectToAction(nameof(PendingApproval));
+            }
 
             // For now, just return the view (subscription service not implemented yet)
             ViewBag.Subscription = null;
@@ -384,6 +443,10 @@
             if (user == null || user.Role != "Owner")
             {
                 return RedirectToAction("Index", "Home");
+            }
+            if (user.IsApproved != true)
+            {
+                return RedirectToAction(nameof(PendingApproval));
             }
 
             var stadium = await _stadiumService.GetStadiumByIdAsync(stadiumId);
@@ -408,6 +471,10 @@
             if (user == null || user.Role != "Owner")
             {
                 return RedirectToAction("Index", "Home");
+            }
+            if (user.IsApproved != true)
+            {
+                return RedirectToAction(nameof(PendingApproval));
             }
 
             var stadiums = await _stadiumService.GetStadiumsByOwnerIdAsync(user.Id);
