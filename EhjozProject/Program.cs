@@ -67,6 +67,14 @@ using (var scope = app.Services.CreateScope())
         logger.LogInformation("Seeding admin user...");
         await EhjozProject.Infrastructure.Data.DbInitializer.SeedAdminUserAsync(scope.ServiceProvider);
         logger.LogInformation("Admin user seeded successfully.");
+
+        // Seed demo data (Development only, and only if enabled)
+        if (app.Environment.IsDevelopment() && builder.Configuration.GetValue<bool>("SeedDemoData"))
+        {
+            logger.LogInformation("Seeding demo data...");
+            await EhjozProject.Infrastructure.Data.DbInitializer.SeedDemoDataAsync(scope.ServiceProvider);
+            logger.LogInformation("Demo data seeded successfully.");
+        }
     }
     catch (Exception ex)
     {
