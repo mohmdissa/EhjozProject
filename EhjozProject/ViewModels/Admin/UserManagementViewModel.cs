@@ -13,6 +13,7 @@ namespace EhjozProject.Web.ViewModels.Admin
         public string PhoneNumber { get; set; } = null!;
         public string City { get; set; } = null!;
         public string CreatedDate { get; set; } = null!;
+        public bool IsLocked { get; set; }
     }
 }
 

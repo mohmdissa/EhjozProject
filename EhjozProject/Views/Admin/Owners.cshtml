@@ -36,6 +36,7 @@
                         <th>City</th>
                         <th>Status</th>
                         <th>Subscription End</th>
+                        <th>Access</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -59,6 +60,16 @@
                             </td>
                             <td>@(owner.SubscriptionEndDate?.ToString("yyyy-MM-dd") ?? "N/A")</td>
                             <td>
+                                @if (owner.IsLocked)
+                                {
+                                    <span class="badge bg-danger">Deactivated</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-success">Active</span>
+                                }
+                            </td>
+                            <td>
                                 @if (!owner.IsApproved)
                                 {
                                     <form asp-action="ApproveOwner" method="post" style="display:inline;">
@@ -75,6 +86,14 @@
                                         <button type="submit" class="btn btn-sm btn-danger">Reject</button>
                                     </form>
                                 }
+
+                                <form asp-action="ToggleOwnerLock" method="post" style="display:inline;">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@owner.Id" />
+                                    <button type="submit" class="btn btn-sm @(owner.IsLocked ? "btn-success" : "btn-outline-danger")">
+                                        @(owner.IsLocked ? "Activate" : "Deactivate")
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                     }

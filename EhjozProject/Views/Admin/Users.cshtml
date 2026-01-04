@@ -34,6 +34,8 @@
                         <th>Email</th>
                         <th>Phone</th>
                         <th>City</th>
+                        <th>Status</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -44,6 +46,25 @@
                             <td>@user.Email</td>
                             <td>@user.PhoneNumber</td>
                             <td>@user.City</td>
+                            <td>
+                                @if (user.IsLocked)
+                                {
+                                    <span class="badge bg-danger">Deactivated</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-success">Active</span>
+                                }
+                            </td>
+                            <td>
+                                <form asp-action="ToggleUserLock" method="post" style="display:inline;">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@user.Id" />
+                                    <button type="submit" class="btn btn-sm @(user.IsLocked ? "btn-success" : "btn-outline-danger")">
+                                        @(user.IsLocked ? "Activate" : "Deactivate")
+                                    </button>
+                                </form>
+                            </td>
                         </tr>
                     }
                 </tbody>

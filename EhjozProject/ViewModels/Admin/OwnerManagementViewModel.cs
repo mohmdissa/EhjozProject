@@ -14,6 +14,7 @@ namespace EhjozProject.Web.ViewModels.Admin
         public string City { get; set; } = null!;
         public bool IsApproved { get; set; }
         public DateTime? SubscriptionEndDate { get; set; }
+        public bool IsLocked { get; set; }
     }
 }
 

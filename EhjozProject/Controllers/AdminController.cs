@@ -193,11 +193,37 @@ namespace EhjozProject.Web.Controllers
                     Email = u.Email ?? "N/A",
                     PhoneNumber = u.PhoneNumber ?? "N/A",
                     City = u.City ?? "N/A",
-                    CreatedDate = u.Id // Using Id as proxy since we don't have CreatedDate field
+                    CreatedDate = u.Id, // Using Id as proxy since we don't have CreatedDate field
+                    IsLocked = u.LockoutEnd.HasValue && u.LockoutEnd.Value > DateTimeOffset.UtcNow
                 }).ToList()
             };
 
             return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ToggleUserLock(string id)
+        {
+            var admin = await _userManager.GetUserAsync(User);
+            if (!IsAdmin(admin))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            var target = await _userManager.FindByIdAsync(id);
+            if (target == null || target.Role != "Customer")
+            {
+                return NotFound();
+            }
+
+            target.LockoutEnabled = true;
+            var isLocked = target.LockoutEnd.HasValue && target.LockoutEnd.Value > DateTimeOffset.UtcNow;
+            target.LockoutEnd = isLocked ? null : DateTimeOffset.UtcNow.AddYears(100);
+            await _userManager.UpdateAsync(target);
+
+            TempData["Success"] = isLocked ? $"User {target.Email} unlocked." : $"User {target.Email} deactivated (locked).";
+            return RedirectToAction(nameof(Users));
         }
 
         #endregion
@@ -226,7 +252,8 @@ namespace EhjozProject.Web.Controllers
                     PhoneNumber = o.PhoneNumber ?? "N/A",
                     City = o.City ?? "N/A",
                     IsApproved = o.IsApproved ?? false,
-                    SubscriptionEndDate = o.SubscriptionEndDate
+                    SubscriptionEndDate = o.SubscriptionEndDate,
+                    IsLocked = o.LockoutEnd.HasValue && o.LockoutEnd.Value > DateTimeOffset.UtcNow
                 }).ToList()
             };
 
@@ -276,6 +303,31 @@ namespace EhjozProject.Web.Controllers
             await _userManager.UpdateAsync(owner);
 
             TempData["Success"] = $"Owner {owner.FullName} has been rejected.";
+            return RedirectToAction(nameof(Owners));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ToggleOwnerLock(string id)
+        {
+            var admin = await _userManager.GetUserAsync(User);
+            if (!IsAdmin(admin))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            var target = await _userManager.FindByIdAsync(id);
+            if (target == null || target.Role != "Owner")
+            {
+                return NotFound();
+            }
+
+            target.LockoutEnabled = true;
+            var isLocked = target.LockoutEnd.HasValue && target.LockoutEnd.Value > DateTimeOffset.UtcNow;
+            target.LockoutEnd = isLocked ? null : DateTimeOffset.UtcNow.AddYears(100);
+            await _userManager.UpdateAsync(target);
+
+            TempData["Success"] = isLocked ? $"Owner {target.Email} unlocked." : $"Owner {target.Email} deactivated (locked).";
             return RedirectToAction(nameof(Owners));
         }
 
