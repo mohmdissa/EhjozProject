@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EhjozProject.Web.Controllers
 {
+    [Authorize]
     public class AdminController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -66,6 +67,105 @@ namespace EhjozProject.Web.Controllers
             };
 
             return View(viewModel);
+        }
+
+        #endregion
+
+        #region Admins Management
+
+        [HttpGet]
+        public async Task<IActionResult> Admins()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (!IsAdmin(user))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            var allUsers = await _userManager.Users.ToListAsync();
+            var admins = allUsers.Where(u => u.Role == "Admin").ToList();
+
+            var vm = new AdminsManagementViewModel
+            {
+                Admins = admins.Select(a => new AdminUserViewModel
+                {
+                    Id = a.Id,
+                    FullName = a.FullName ?? "N/A",
+                    Email = a.Email ?? "N/A",
+                    City = a.City
+                }).ToList()
+            };
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateAdmin(AdminsManagementViewModel model)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (!IsAdmin(user))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction(nameof(Admins));
+            }
+
+            var email = model.CreateAdmin.Email.Trim();
+            var existing = await _userManager.FindByEmailAsync(email);
+            if (existing != null)
+            {
+                TempData["Success"] = "User already exists. If you want to promote them to Admin, use the Promote action.";
+                return RedirectToAction(nameof(Admins));
+            }
+
+            var newAdmin = new ApplicationUser
+            {
+                UserName = email,
+                Email = email,
+                EmailConfirmed = true,
+                FullName = string.IsNullOrWhiteSpace(model.CreateAdmin.FullName) ? "Admin User" : model.CreateAdmin.FullName,
+                City = model.CreateAdmin.City,
+                Role = "Admin",
+                IsApproved = true
+            };
+
+            var result = await _userManager.CreateAsync(newAdmin, model.CreateAdmin.Password);
+            if (!result.Succeeded)
+            {
+                TempData["Success"] = $"Failed to create admin: {string.Join(", ", result.Errors.Select(e => e.Description))}";
+                return RedirectToAction(nameof(Admins));
+            }
+
+            TempData["Success"] = "Admin account created successfully.";
+            return RedirectToAction(nameof(Admins));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> PromoteToAdmin(string id)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (!IsAdmin(user))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            var target = await _userManager.FindByIdAsync(id);
+            if (target == null)
+            {
+                return NotFound();
+            }
+
+            target.Role = "Admin";
+            target.IsApproved = true;
+            await _userManager.UpdateAsync(target);
+
+            TempData["Success"] = $"User {target.Email} promoted to Admin.";
+            return RedirectToAction(nameof(Admins));
         }
 
         #endregion

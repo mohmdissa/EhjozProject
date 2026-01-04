@@ -1,0 +1,86 @@
+@model EhjozProject.Web.ViewModels.Admin.AdminsManagementViewModel
+@{
+    ViewData["Title"] = "Admins";
+}
+
+<div class="admin-shell">
+    <div class="admin-topbar">
+        <div>
+            <h1 class="admin-title">Admins</h1>
+            <p class="admin-subtitle">Create and manage admin accounts</p>
+        </div>
+        <a asp-action="Dashboard" class="btn btn-outline-secondary">Back</a>
+    </div>
+
+    @await Html.PartialAsync("_AdminNav")
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="row g-3">
+        <div class="col-lg-7">
+            <div class="admin-card card">
+                <div class="card-header">Current Admins</div>
+                <div class="card-body p-0">
+                    <table class="table admin-table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>City</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var a in Model.Admins)
+                            {
+                                <tr>
+                                    <td>@a.FullName</td>
+                                    <td>@a.Email</td>
+                                    <td>@(a.City ?? "-")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="admin-card card">
+                <div class="card-header">Create New Admin</div>
+                <div class="card-body">
+                    <form asp-action="CreateAdmin" method="post" class="vstack gap-3">
+                        @Html.AntiForgeryToken()
+
+                        <div>
+                            <label class="form-label">Email</label>
+                            <input class="form-control" asp-for="CreateAdmin.Email" />
+                        </div>
+                        <div>
+                            <label class="form-label">Password</label>
+                            <input class="form-control" asp-for="CreateAdmin.Password" type="password" />
+                            <div class="form-text">Use a strong password (example: Admin123!).</div>
+                        </div>
+                        <div>
+                            <label class="form-label">Full Name</label>
+                            <input class="form-control" asp-for="CreateAdmin.FullName" />
+                        </div>
+                        <div>
+                            <label class="form-label">City</label>
+                            <input class="form-control" asp-for="CreateAdmin.City" />
+                        </div>
+
+                        <button class="btn btn-success">Create Admin</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
