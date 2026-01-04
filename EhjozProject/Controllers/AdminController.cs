@@ -599,6 +599,42 @@ namespace EhjozProject.Web.Controllers
             return View(viewModel);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeactivateSubscription(int id)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (!IsAdmin(user))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            var subscription = await _subscriptionService.GetSubscriptionByIdAsync(id);
+            if (subscription == null)
+            {
+                return NotFound();
+            }
+
+            subscription.IsActive = false;
+            if (subscription.EndDate > DateTime.UtcNow)
+            {
+                subscription.EndDate = DateTime.UtcNow;
+            }
+
+            await _subscriptionService.UpdateSubscriptionAsync(subscription);
+
+            // Best-effort: update owner's SubscriptionEndDate too
+            var owner = await _userManager.FindByIdAsync(subscription.OwnerId);
+            if (owner != null)
+            {
+                owner.SubscriptionEndDate = subscription.EndDate;
+                await _userManager.UpdateAsync(owner);
+            }
+
+            TempData["Success"] = $"Subscription #{id} deactivated.";
+            return RedirectToAction(nameof(Subscriptions));
+        }
+
         #endregion
     }
 }
