@@ -494,6 +494,37 @@ namespace EhjozProject.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreatePlan(SubscriptionPlanManagementViewModel model)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (!IsAdmin(user))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            if (string.IsNullOrWhiteSpace(model.CreatePlan.Name))
+            {
+                TempData["Success"] = "Plan name is required.";
+                return RedirectToAction(nameof(Plans));
+            }
+
+            var plan = new EhjozProject.Domain.Models.Subscription.SubscriptionPlan
+            {
+                Name = model.CreatePlan.Name.Trim(),
+                Description = model.CreatePlan.Description,
+                Price = model.CreatePlan.Price,
+                DurationDays = model.CreatePlan.DurationDays,
+                MaxStadiums = model.CreatePlan.MaxStadiums,
+                IsActive = model.CreatePlan.IsActive
+            };
+
+            await _subscriptionService.CreateSubscriptionPlanAsync(plan);
+            TempData["Success"] = "Subscription plan created.";
+            return RedirectToAction(nameof(Plans));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AcceptPlan(int id)
         {
             var user = await _userManager.GetUserAsync(User);
