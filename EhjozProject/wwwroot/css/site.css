@@ -409,6 +409,71 @@ main.pb-3 {
 /* ========================================
    STADIUM CARDS
    ======================================== */
+.page-header {
+    padding: 2.25rem 5% 1.5rem;
+    background: linear-gradient(135deg, rgba(26, 93, 43, 0.95) 0%, rgba(19, 70, 32, 0.9) 100%);
+    color: var(--white);
+}
+
+.page-header .page-header-content {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.page-header .page-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    font-weight: 700;
+    margin: 0 0 0.35rem 0;
+}
+
+.page-header .page-subtitle {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.88);
+    font-weight: 300;
+}
+
+.filters-section {
+    padding: 0 5%;
+    margin-top: -0.85rem;
+    margin-bottom: 1.25rem;
+}
+
+.filters-card {
+    max-width: 1100px;
+    margin: 0 auto;
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    padding: 0.9rem;
+}
+
+.filters-card .form-select,
+.filters-card .form-control,
+.filters-card .btn {
+    border-radius: 12px;
+}
+
+.filters-card .input-group-text {
+    border-radius: 12px 0 0 12px;
+    border-color: rgba(0, 0, 0, 0.12);
+}
+
+.filters-card .input-group .form-control {
+    border-left: 0;
+}
+
+.results-info {
+    max-width: 1100px;
+    margin: 0 auto 1rem;
+    padding: 0 5%;
+    color: var(--text-gray);
+}
+
+.results-info strong {
+    color: var(--primary-green);
+}
+
 .stadiums-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
