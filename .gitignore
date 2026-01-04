@@ -1,5 +1,11 @@
 # Visual Studio
 .vs/
+.DS_Store
+
+# SQLite / local databases
+*.db
+*.db-shm
+*.db-wal
 
 # Build outputs
 bin/
